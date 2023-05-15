@@ -5,17 +5,18 @@
   "main": "index.js",
   "dependencies": {
     "chownr": "^2.0.0",
+    "firebase": "^9.21.0",
     "fs-minipass": "^2.1.0",
     "minipass": "^5.0.0",
     "minizlib": "^2.1.2",
     "mkdirp": "^1.0.4",
-    "tar": "^6.1.14",
-    "yallist": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "firebase": "^9.21.0"
+    "react-redux": "^8.0.5",
+    "redux": "^4.2.1",
+    "tar": "^6.1.14",
+    "yallist": "^4.0.0"
   },
-  "devDependencies": {},
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
