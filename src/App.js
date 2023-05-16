@@ -1,15 +1,15 @@
 import React from 'react';
+import TaskList from './Components/TaskList'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  render() {
+    return (
+      <div className="App">
+        <h1>PlanMate</h1>
+        <TaskList />
+      </div>
+    );
+  }
 }
 
 export default App;
