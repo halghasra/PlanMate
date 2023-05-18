@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Paper, Tabs, Tab, Typography, Box, Snackbar, Alert } from '@mui/material';
 import Login from './Login';
 import SignUp from './SignUp';
-//import Alert from '@mui/lab/Alert';
 
 class Auth extends Component {
   state = { value: 0, error: null };

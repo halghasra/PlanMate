@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { signInWithPopup } from 'firebase/auth';
+//import { signInWithPopup } from 'firebase/auth';
 import { Button, TextField } from '@mui/material'; //Adding MUI components styling
 import { auth, GoogleAuthProvider } from '../firebase';
+//mport { auth } from '../firebase';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import GoogleIcon from '@mui/icons-material/Google';
 
 class Login extends Component {
@@ -16,7 +18,7 @@ class Login extends Component {
         const { email, password } = this.state;
 
         try {
-            await auth.signInWithEmailAndPassword(email, password);
+            await signInWithEmailAndPassword(auth, email, password);
         } catch (error) {
             this.props.handleError(error.message);
         }
@@ -25,12 +27,12 @@ class Login extends Component {
     // Method to handle the sign-in with Google
     handleGoogleSignIn = async () => {
         try {
-            const result = await signInWithPopup(auth, GoogleAuthProvider);
+            await signInWithPopup(auth, GoogleAuthProvider);
             // The signed-in user info.
-            const user = result.user;
+            //const user = result.user;
             // This gives us a Google Access Token, which we can use to access the Google API.
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
+            //const credential = GoogleAuthProvider.credentialFromResult(result);
+            //const token = credential.accessToken;
         } catch (error) {
             this.props.handleError(error.message);
         }
