@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { auth } from './firebase';
-import SignUp from './components/SignUp';
-import Login from './components/Login';
+import Auth from './components/Auth';
 //import './App.css'; will be added later once I define App.css
 //import TaskList from './components/TaskList' testing completed, this will be disabled until the tasklist is used again
 
@@ -18,20 +17,8 @@ class App extends Component {
 
   render() {
     const { user } = this.state;
-
-    return (
-      <div>
-        {user ? (
-          <p>Welcome, {user.email}</p>
-        ) : (
-          <div>
-            <SignUp />
-            <Login />
-          </div>
-        )}
-      </div>
-    );
-  }
+    return user ? <p>Welcome, {user.email}</p> : <Auth />;
+  } //Replaced SignUp and Login with Auth
 }
 
 /*

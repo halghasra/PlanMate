@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { auth } from '../firebase';
+import { Button, TextField } from '@mui/material'; //Adding MUI components styling
 
 class Login extends Component {
     state = { email: '', password: '', error: null };
@@ -15,34 +16,37 @@ class Login extends Component {
         try {
             await auth.signInWithEmailAndPassword(email, password);
         } catch (error) {
-            this.setState({ error: error.message });
+            this.props.handleError(error.message);
         }
     };
 
     render() {
-        const { email, password, error } = this.state;
-
+        const { email, password } = this.state;
         return (
-            <div>
-                <form onSubmit={this.handleSubmit}>
-                    <input
-                        name="email"
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={this.handleInputchange}
-                    />
-                    <input
-                     name="password"
-                     type="password"
-                     placeholder="Password"
-                     value={password}
-                     onChange={this.handleInputChange}
-                    />
-                    {error ? <p>{error}</p> : null}
-                    <button type="submit">Login</button>
-                </form>
-            </div>
+          <form onSubmit={this.handleSubmit}>
+            <TextField
+              fullWidth
+              margin="normal"
+              name="email"
+              placeholder="Email"
+              value={email}
+              onChange={this.handleInputChange}
+              required
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              name="password"
+              placeholder="Password"
+              value={password}
+              onChange={this.handleInputChange}
+              required
+              type="password"
+            />
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
+              Login
+            </Button>
+          </form>
         );
     }
 }

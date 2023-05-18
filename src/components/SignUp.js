@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { auth } from '../firebase';
+import { Button, TextField } from '@mui/material'; //Adding MUI components styling
+
 
 class SignUp extends Component {
     state = { email: '', password: '', error: null };
@@ -15,34 +17,37 @@ class SignUp extends Component {
         try {
             await auth.createUserWithEmailAndPassword(email, password);
         } catch (error) {
-            this.setState({ error: error.message });
+            this.props.handleError(error.message);
         }
     };
 
     render() {
-        const { email, password, error } = this.state;
-
+        const { email, password } = this.state;
         return (
-            <div>
-                <form onSubmit={this.handleSubmit}>
-                    <input
-                        name="email"
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={this.handleInputChange}
-                    />
-                    <input
-                        name="password"
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={this.handleInputChange}
-                    />
-                    {error ? <p>{error}</p> : null}
-                    <button type="submit">Sign Up</button>
-                </form>
-            </div>
+          <form onSubmit={this.handleSubmit}>
+            <TextField
+              fullWidth
+              margin="normal"
+              name="email"
+              placeholder="Email"
+              value={email}
+              onChange={this.handleInputChange}
+              required
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              name="password"
+              placeholder="Password"
+              value={password}
+              onChange={this.handleInputChange}
+              required
+              type="password"
+            />
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
+              Sign Up
+            </Button>
+          </form>
         );
     }
 }
