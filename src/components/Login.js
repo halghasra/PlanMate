@@ -60,6 +60,14 @@ class Login extends Component {
               required
               type="password"
             />
+            <Button 
+              type="submit"
+              fullWidth 
+              variant="contained" 
+              sx={{ mt: 2 }}
+            >
+              Sign In
+            </Button>
             <hr style={{ margin: "20px 0" }} />
             <p style={{ textAlign: "center" }}>or</p>
             <Button 

@@ -1,49 +1,37 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { auth } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import Auth from './components/Auth';
+import LogoutButton from './components/LogoutButton';
 //import './App.css'; will be added later once I define App.css
-//import TaskList from './components/TaskList' testing completed, this will be disabled until the tasklist is used again
 
 class App extends Component {
   state = { user: null };
 
   componentDidMount() {
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ user });
-      }
+    this.authSubscription = onAuthStateChanged(auth, (user) => {
+      this.setState({ user });
     });
   }
 
-  render() {
-    const { user } = this.state;
-    return user ? <p>Welcome, {user.email}</p> : <Auth />;
-  } //Replaced SignUp and Login with Auth
-}
-
-/*
-This is removed for now following a successful test for the tasks list, it will be added later when the tasks list 
-is introduced to the app.
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-        tasks: [
-            { description: 'First task', isCompleted: false},
-            { description: 'Second task', isCompleted: false},
-            { description: 'Third task', isCompleted: false},
-        ]
-    };
+  componentWillUnmount() {
+    this.authSubscription();
   }
 
   render() {
     return (
-      <div className="App">
-        <TaskList tasks={this.state.tasks}/>
-      </div>
+      <Router>
+        <div>
+          {this.state.user && <LogoutButton />}
+          <Routes>
+            <Route path="/" element={this.state.user ? <p>Welcome, {this.state.user.email}</p> : <Navigate to="/login" />} />
+            <Route path="/login" element={!this.state.user ? <Auth /> : <Navigate to="/" />} />
+          </Routes>
+        </div>
+      </Router>
     );
   }
 }
-*/
 
 export default App;
