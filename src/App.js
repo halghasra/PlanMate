@@ -3,15 +3,16 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import Auth from './components/Auth';
-import LogoutButton from './components/LogoutButton';
+import LogoutButton from './components/LogoutButton'; // import the logout button
+import LoadingSpinner from './components/LoadingSpinner'; // Import the loading spinner
 //import './App.css'; will be added later once I define App.css
 
 class App extends Component {
-  state = { user: null };
+  state = { user: null, loading: true }; // start loading while the auth state is being determined
 
   componentDidMount() {
     this.authSubscription = onAuthStateChanged(auth, (user) => {
-      this.setState({ user });
+      this.setState({ user , loading: false}); // stop loading
     });
   }
 
@@ -20,6 +21,9 @@ class App extends Component {
   }
 
   render() {
+    if (this.state.loading) {
+      return <LoadingSpinner />
+    }
     return (
       <Router>
         <div>
