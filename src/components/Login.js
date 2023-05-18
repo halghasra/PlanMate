@@ -5,9 +5,11 @@ import { auth, GoogleAuthProvider } from '../firebase';
 //mport { auth } from '../firebase';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import GoogleIcon from '@mui/icons-material/Google';
+import LoadingSpinner from './LoadingSpinner'; // import the loading spinner
+
 
 class Login extends Component {
-    state = { email: '', password: '', error: null };
+    state = { email: '', password: '', error: null, loading: false };
 
     handleInputChange = (event) => {
         this.setState({ [event.target.name]: event.target.value });
@@ -17,30 +19,34 @@ class Login extends Component {
         event.preventDefault();
         const { email, password } = this.state;
 
+        this.setState({ loading: true }); // start loading
         try {
             await signInWithEmailAndPassword(auth, email, password);
         } catch (error) {
             this.props.handleError(error.message);
-        }
+        } finally {
+          this.setState({ loading: false }); // stop loading
+      }
     };
 
     // Method to handle the sign-in with Google
     handleGoogleSignIn = async () => {
-        try {
+      this.setState({ loading: true }); // start loading  
+      try {
             await signInWithPopup(auth, GoogleAuthProvider);
-            // The signed-in user info.
-            //const user = result.user;
-            // This gives us a Google Access Token, which we can use to access the Google API.
-            //const credential = GoogleAuthProvider.credentialFromResult(result);
-            //const token = credential.accessToken;
         } catch (error) {
             this.props.handleError(error.message);
-        }
+        } finally {
+          this.setState({ loading: false }); // stop loading
+      }
     };
     
 
     render() {
-        const { email, password } = this.state;
+        const { email, password, loading } = this.state;
+        if (loading) {
+          return <LoadingSpinner />
+        }
         return (
           <form onSubmit={this.handleSubmit}>
             <TextField
