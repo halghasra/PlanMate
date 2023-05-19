@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { auth } from '../firebase';
 import { Button, TextField } from '@mui/material'; //Adding MUI components styling
-
+import { createUserWithEmailAndPassword } from '../firebase';
 
 class SignUp extends Component {
     state = { email: '', password: '', error: null };
@@ -15,7 +15,7 @@ class SignUp extends Component {
         const { email, password } = this.state;
 
         try {
-            await auth.createUserWithEmailAndPassword(email, password);
+            await createUserWithEmailAndPassword(auth, email, password);
         } catch (error) {
             this.props.handleError(error.message);
         }
