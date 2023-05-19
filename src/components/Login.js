@@ -7,7 +7,6 @@ import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import GoogleIcon from '@mui/icons-material/Google';
 import LoadingSpinner from './LoadingSpinner'; // import the loading spinner
 
-
 class Login extends Component {
     state = { email: '', password: '', error: null, loading: false };
 
@@ -93,4 +92,3 @@ class Login extends Component {
 }
 
 export default Login;
-
