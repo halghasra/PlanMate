@@ -1,19 +1,24 @@
-import React, { Component } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { auth, db } from './firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore'; // Imports doc data from firestore
-import Auth from './components/Auth';
-import LogoutButton from './components/LogoutButton'; // import the logout button
-import LoadingSpinner from './components/LoadingSpinner'; // Import the loading spinner
-import UserProfile from './components/UserProfile'; //Import the user profile from Firebase
-import ProfileCompletion from './components/ProfileCompletion';
+import React, { Component } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { auth, db } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore"; // Imports doc data from firestore
+import Auth from "./components/Auth";
+import LogoutButton from "./components/LogoutButton"; // import the logout button
+import LoadingSpinner from "./components/LoadingSpinner"; // Import the loading spinner
+import UserProfile from "./components/UserProfile"; //Import the user profile from Firebase
+import ProfileCompletion from "./components/ProfileCompletion";
 //import './App.css'; will be added later once I define App.css
 
 class App extends Component {
   // start loading while the auth state is being determined
   // added needsProfileCompletion flag to the state
-  state = { user: null, loading: true, needsProfileCompletion: false }; 
+  state = { user: null, loading: true, needsProfileCompletion: false };
 
   /* Rewriting componentDidMount to add a user profile check.
      This will check to see if the user is signed in and doesn't have a complete profile yet.
@@ -37,14 +42,22 @@ class App extends Component {
 
         if (docSnap.exists()) {
           //user doc exists so they don't need to complete profile
-          this.setState({ user, loading: false, needsProfileCompletion: false })
+          this.setState({
+            user,
+            loading: false,
+            needsProfileCompletion: false,
+          });
         } else {
           // no user doc, they need to complete profile
-          this.setState({ user, loading: false, needsProfileCompletion: true});
+          this.setState({ user, loading: false, needsProfileCompletion: true });
         }
       } else {
         // no user, stop loading
-        this.setState({ user: null, loading: false, needsProfileCompletion: false});
+        this.setState({
+          user: null,
+          loading: false,
+          needsProfileCompletion: false,
+        });
       }
     });
   }
@@ -56,17 +69,53 @@ class App extends Component {
   render() {
     const { loading, user, needsProfileCompletion } = this.state;
     if (loading) {
-      return <LoadingSpinner />
+      return <LoadingSpinner />;
     }
     return (
       <Router>
         <div>
           {user && <LogoutButton />}
           <Routes>
-          <Route path="/" element={user ? (!needsProfileCompletion ? <p>Welcome, {user.email}</p> : <Navigate to="/complete-profile" />) : <Navigate to="/login" />} />
-            <Route path="/login" element={!user ? <Auth /> : <Navigate to="/" />} />
-            <Route path="/profile" element={user ? <UserProfile /> : <Navigate to="/login" />} />
-            <Route path="/complete-profile" element={user ? (!needsProfileCompletion ? <Navigate to="/" /> : <ProfileCompletion />) : <Navigate to="/login" />} />
+            <Route
+              path="/"
+              element={
+                user ? (
+                  !needsProfileCompletion ? (
+                    <p>Welcome, {user.email}</p>
+                  ) : (
+                    <Navigate to="/complete-profile" />
+                  )
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route
+              path="/login"
+              element={!user ? <Auth /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/profile"
+              element={user ? <UserProfile /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/complete-profile"
+              element={
+                user ? (
+                  !needsProfileCompletion ? (
+                    <Navigate to="/" />
+                  ) : (
+                    <ProfileCompletion
+                      onProfileComplete={() =>
+                        this.setState({ needsProfileCompletion: false })
+                      }
+                    />
+                  )
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
           </Routes>
         </div>
       </Router>

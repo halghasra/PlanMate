@@ -35,7 +35,10 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
       // to the home page or somewhere else
       console.log('User data added to Firestore');
       onProfileComplete(); // call onProfileComplete function
-      navigate('/') // when the profile is completed, navigate user to home page
+      setTimeout(() => {
+        navigate('/') // when the profile is completed, navigate user to home page
+      }, 2000); // Set a timeout function to delay the navigate for a couple of seconds to give
+      // the onProfileComplete() enough time to update the state and navigate to home page.
     } catch (error) {
       console.error('Error adding user data to Firestore', error);
     }
