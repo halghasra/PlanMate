@@ -2,8 +2,9 @@ import React, { useState, useRef } from 'react';
 import { TextField, Button, Box, Snackbar, Avatar } from '@mui/material';
 import { doc, setDoc } from "firebase/firestore";
 import { db, auth } from '../firebase';
-import { useNavigate } from 'react-router-dom'; // to be used in navigating the user to home after profile completion
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from '@firebase/storage'; 
+import { useNavigate } from 'react-router-dom'; // to be used in navigating the user to home after profile completion //
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from '@firebase/storage';
+import { CircularProgress } from '@mui/material'; // import circularProgress for the loading spinner
 
 function ProfileCompletion({ onProfileComplete }) { //destructure onProfileComplete from props
   const [name, setName] = useState('');
@@ -13,9 +14,11 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
   const [profilePic, setProfilePic] = useState(null);
   const [picUrl, setPicUrl] = useState(''); // store the url of the uploaded pic
   const fileInputRef = useRef(null) //used to display the name of the selected file
+  const [loading, setLoading] = useState(false); // state for handling form submission loading state //
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true); // set loading state to true before form submission begins.
     
     // Validating name and bio section
     if (!name || !bio) {
@@ -68,7 +71,9 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
         navigate('/') // when the profile is completed, navigate user to home page
       }, 2000); // Set a timeout function to delay the navigate for a couple of seconds to give
       // the onProfileComplete() enough time to update the state and navigate to home page.
+      setLoading(false); // Set loading state back to false once form submition is complete
     } catch (error) {
+      setLoading(false); // Also set loading state back to false in case of an error
       console.error('Error adding user data to Firestore', error);
     }
   };
@@ -93,8 +98,10 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
 
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="100vh">
-      <Avatar alt="User Profile Picture" src={picUrl} sx={{ width: 96, height: 96, mb: 1 }} /> {/* Display the profile picture here */}
-      <Box width="500px">
+      {loading ? <CircularProgress /> : (
+        <>
+        <Avatar alt="User Profile Picture" src={picUrl} sx={{ width: 96, height: 96, mb: 1 }} /> {/* Display the profile picture here */}
+        <Box width="500px">
         <form onSubmit={handleSubmit}>
           <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
             <TextField
@@ -143,6 +150,8 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
           }
         />
       </Box>
+      </>
+      )}
     </Box>
   );
 }
