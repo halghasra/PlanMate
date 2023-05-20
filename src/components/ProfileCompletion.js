@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, Box, Snackbar, Avatar } from '@mui/material';
 import { doc, setDoc } from "firebase/firestore";
 import { db, auth } from '../firebase';
 import { useNavigate } from 'react-router-dom'; // to be used in navigating the user to home after profile completion
-import { Box, Snackbar } from '@mui/material'; //Import Box and Snackbar from MUI to improve page UI
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from '@firebase/storage'; 
 
 function ProfileCompletion({ onProfileComplete }) { //destructure onProfileComplete from props
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
   const navigate = useNavigate(); // initialise navigate
   const [error, setError] = useState(false); // Added a new state for handling error display
+  const [profilePic, setProfilePic] = useState(null);
+  const [picUrl, setPicUrl] = useState(''); // store the url of the uploaded pic
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -26,6 +28,32 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
       email: auth.currentUser.email, // email is taken from auth
       uid: auth.currentUser.uid, // uid is taken from auth
     };
+
+    if (profilePic) {
+      const storage = getStorage();
+      const storageRef = ref(storage, 'profilePics/' + profilePic.name);
+      const uploadTask = uploadBytesResumable(storageRef, profilePic);
+
+      await new Promise((resolve, reject) => {
+        uploadTask.on('state_changed',
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+          },
+          (error) => {
+            console.error('Upload failed', error);
+            reject(error);
+          },
+          async () => {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            console.log('File available at', downloadURL);
+            userData.picUrl = downloadURL;
+            setPicUrl(downloadURL); 
+            resolve();
+          }
+        );
+      });
+    }
 
     try {
       // Here, 'users' is the name of my Firestore collection, and I'm using
@@ -52,9 +80,16 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
   } // this handles the dismissal of the snackbar
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-      <Box width="500px"> {/* Limit the form width */}
+    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="100vh">
+      <Avatar alt="User Profile Picture" src={picUrl} sx={{ width: 96, height: 96, mb: 1 }} /> {/* Display the profile picture here */}
+      <Box width="500px">
         <form onSubmit={handleSubmit}>
+          <TextField
+            accept="image/*"
+            type="file"
+            onChange={event => setProfilePic(event.target.files[0])}
+            sx={{ mb: 1 }}
+          />
           <TextField
             name="name"
             label="Name"
@@ -62,7 +97,7 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
             onChange={event => setName(event.target.value)}
             required
             fullWidth
-            sx={{ mb: 1}} // add bottom margin
+            sx={{ mb: 1}}
           />
           <TextField
             name="bio"
@@ -72,7 +107,6 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
             required
             fullWidth
             multiline
-            //sx={{ mb: 1}} // add bottom margin
           />
           <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2 }}>
             Submit
