@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { TextField, Button, Box, Snackbar, Avatar } from '@mui/material';
 import { doc, setDoc } from "firebase/firestore";
 import { db, auth } from '../firebase';
@@ -12,6 +12,7 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
   const [error, setError] = useState(false); // Added a new state for handling error display
   const [profilePic, setProfilePic] = useState(null);
   const [picUrl, setPicUrl] = useState(''); // store the url of the uploaded pic
+  const fileInputRef = useRef(null) //used to display the name of the selected file
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -72,6 +73,17 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
     }
   };
 
+  const handleFileChange = (event) => {
+    setProfilePic(event.target.files[0]);
+  };
+
+  // Adds the ability to reset the selected file
+  const resetFile = (event) => {
+    event.preventDefault(); // prevent the form from being submitted
+    fileInputRef.current.value = ""; // clear the value in the file input
+    setProfilePic(null); // clear the selected file
+  }
+
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -84,12 +96,18 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
       <Avatar alt="User Profile Picture" src={picUrl} sx={{ width: 96, height: 96, mb: 1 }} /> {/* Display the profile picture here */}
       <Box width="500px">
         <form onSubmit={handleSubmit}>
-          <TextField
-            accept="image/*"
-            type="file"
-            onChange={event => setProfilePic(event.target.files[0])}
-            sx={{ mb: 1 }}
-          />
+          <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
+            <TextField
+              accept="image/*"
+              type="file"
+              onChange={handleFileChange}
+              inputRef={fileInputRef}
+            />
+            <Button onClick={resetFile} variant="contained" color="secondary" sx={{ ml: 1 }} type="button">
+              Reset
+            </Button>
+            {profilePic && <Box sx={{ ml: 2 }}>{profilePic.name}</Box>}
+          </Box>
           <TextField
             name="name"
             label="Name"
