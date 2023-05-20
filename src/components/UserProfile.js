@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { TextField, Button, Box } from '@mui/material';
+import { TextField, Button, Box, Avatar } from '@mui/material';
 import LoadingSpinner from './LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // to use Firestorage to store Profile pictures
@@ -15,7 +15,7 @@ const UserProfile = () => {
   const navigate = useNavigate();
   const [profilePic, setProfilePic] = useState(null);
   const [picUrl, setPicUrl] = useState(''); // store the url of the uploaded pic
-  const [uploading, setUploading] = useState(false); // set a new state to handle loading state of picture upload
+  //const [uploading, setUploading] = useState(false); // set a new state to handle loading state of picture upload
 
   // Asynchronous function to get the user data from Firestore
   const fetchUserData = async () => {
@@ -25,6 +25,7 @@ const UserProfile = () => {
     if (docSnap.exists()) {
       setName(docSnap.data().name);
       setBio(docSnap.data().bio);
+      setPicUrl(docSnap.data().picUrl); // fetch the picture URL
     } else {
       console.log("No such documents!");
     }
@@ -38,14 +39,14 @@ const UserProfile = () => {
       console.log('All fields are required');
       return;
     }
-
+  
     const userData = {
       name,
       bio,
       email: auth.currentUser.email,
       uid: auth.currentUser.uid,
     };
-
+  
     if (profilePic) {
       const storage = getStorage();
       const storageRef = ref(storage, 'profilePics/' + profilePic.name);
@@ -57,25 +58,19 @@ const UserProfile = () => {
           (snapshot) => {
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             console.log('Upload is ' + progress + '% done');
-            setUploading(true);
           }, 
           (error) => {
             console.error('Upload failed', error);
-            setUploading(false);
             reject(error);
           }, 
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              console.log('File available at', downloadURL);
-              setPicUrl(downloadURL);
-              setUploading(false);
-              resolve();
-            });
+          async () => {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            console.log('File available at', downloadURL);
+            userData.picUrl = downloadURL; // add the URL to userData here
+            resolve();
           }
         );
       });
-  
-      userData.picUrl = picUrl;
     }
 
     try {
@@ -100,7 +95,8 @@ const UserProfile = () => {
   }
   
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="100vh">
+      <Avatar alt="User Profile Picture" src={picUrl} sx={{ width: 56, height: 56, mb: 1 }}/> {/* Display the profile picture here */}
       <form onSubmit={updateUserProfile}>
         <TextField
             accept="image/*"
