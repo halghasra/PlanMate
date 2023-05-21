@@ -44,7 +44,13 @@ class SignUp extends Component {
               required
               type="password"
             />
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
+            <Button 
+              type="submit"
+              fullWidth 
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2, '&:hover': {bgcolor: 'primary.light'} }}
+            >
               Sign Up
             </Button>
           </form>

@@ -1,19 +1,24 @@
 import { createTheme } from "@mui/material";
+import { lighten } from "@mui/system";
 import Colours from "./Colours";
 
 const theme = createTheme({
     palette: {
-        purple: {
+        primary: {
             main: Colours.purple,
+            light: lighten(Colours.purple, 0.2) // this creates a lighter version of the colour used for effect 
         },
-        yellow: {
+        secondary: {
             main: Colours.yellow,
+            light: lighten(Colours.yellow, 0.2)
         },
-        cyan: {
+        info: {
             main: Colours.cyan,
+            light: lighten(Colours.yellow, 0.2)
         },
-        red: {
+        error: {
             main: Colours.red,
+            light: lighten(Colours.red, 0.2)
         },
     },
     typography: {
@@ -27,7 +32,6 @@ const theme = createTheme({
                     transition: '0.3s',
                     '&:hover': {
                         transform: 'translateY(-5px)',
-                        backgroundColor: Colours.purple, // This adds a lighter shade of purple to the background
                     },
                 },
             },

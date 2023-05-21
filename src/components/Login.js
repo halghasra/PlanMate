@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-//import { signInWithPopup } from 'firebase/auth';
-import { Button, TextField } from '@mui/material'; //Adding MUI components styling
+import { Button, TextField, CircularProgress } from '@mui/material'; //Adding MUI components styling
 import { auth, GoogleAuthProvider } from '../firebase';
-//mport { auth } from '../firebase';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import GoogleIcon from '@mui/icons-material/Google';
-import LoadingSpinner from './LoadingSpinner'; // import the loading spinner
+//import LoadingSpinner from './LoadingSpinner'; // import the loading spinner
 
 class Login extends Component {
     state = { email: '', password: '', error: null, loading: false };
@@ -44,7 +42,7 @@ class Login extends Component {
     render() {
         const { email, password, loading } = this.state;
         if (loading) {
-          return <LoadingSpinner />
+          return <CircularProgress />
         }
         return (
           <form onSubmit={this.handleSubmit}>
@@ -70,10 +68,11 @@ class Login extends Component {
             <Button 
               type="submit"
               fullWidth 
-              variant="contained" 
-              sx={{ mt: 2 }}
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2, '&:hover': {bgcolor: 'primary.light'} }}
             >
-              Sign In
+              Login
             </Button>
             <hr style={{ margin: "20px 0" }} />
             <p style={{ textAlign: "center" }}>or</p>
@@ -81,8 +80,9 @@ class Login extends Component {
               onClick={this.handleGoogleSignIn} 
               fullWidth 
               variant="contained" 
+              color="error"
               startIcon={<GoogleIcon />}
-              sx={{ mt: 2, bgcolor: '#db4437', color: 'white' }}
+              sx={{ mt: 2, color: 'white', '&:hover': {bgcolor: 'error.light'} }}
             >
               Sign In with Google
             </Button>

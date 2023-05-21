@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Paper, Tabs, Tab, Typography, Box, Snackbar, Alert } from '@mui/material';
+import { Paper, Tabs, Tab, Box, Snackbar, Alert } from '@mui/material';
 import Login from './Login';
 import SignUp from './SignUp';
+import logo from '../assets/planmate-logo-purple.png';
 
 class Auth extends Component {
   state = { value: 0, error: null };
@@ -30,7 +31,7 @@ class Auth extends Component {
       >
         <Paper elevation={3} sx={{ width: '90%', maxWidth: '500px', p: 2 }}>
           <Box textAlign="center" pb={2}>
-            <Typography variant="h4">PlanMate</Typography>
+            <img src={logo} alt="PlanMate logo" style={{ width: '50%' }} />
           </Box>
           <Tabs
             value={value}

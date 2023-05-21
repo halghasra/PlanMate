@@ -1,4 +1,4 @@
-import LogoPrimary from '../resources/planmate-logo-purple.png';
-import LogoSecondary from '../resources/planmate-logo-white.png';
+import LogoPrimary from '../assets/planmate-logo-purple.png';
+import LogoSecondary from '../assets/planmate-logo-white.png';
 
 export { LogoPrimary, LogoSecondary};

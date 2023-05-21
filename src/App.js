@@ -10,10 +10,11 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore"; // Imports doc data from firestore
 import Auth from "./components/Auth";
 import LogoutButton from "./components/LogoutButton"; // import the logout button
-import LoadingSpinner from "./components/LoadingSpinner"; // Import the loading spinner
+//import LoadingSpinner from "./components/LoadingSpinner"; // Import the loading spinner
 import UserProfile from "./components/UserProfile"; //Import the user profile from Firebase
 import ProfileCompletion from "./components/ProfileCompletion";
-//import './App.css'; will be added later once I define App.css
+import { ThemeProvider, CircularProgress } from "@mui/material";
+import theme from './theme/theme';
 
 class App extends Component {
   // start loading while the auth state is being determined
@@ -69,56 +70,58 @@ class App extends Component {
   render() {
     const { loading, user, needsProfileCompletion } = this.state;
     if (loading) {
-      return <LoadingSpinner />;
+      return <CircularProgress />;
     }
     return (
-      <Router>
-        <div>
-          {user && <LogoutButton />}
-          <Routes>
-            <Route
-              path="/"
-              element={
-                user ? (
-                  !needsProfileCompletion ? (
-                    <p>Welcome, {user.email}</p>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <div>
+            {user && <LogoutButton />}
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  user ? (
+                    !needsProfileCompletion ? (
+                      <p>Welcome, {user.email}</p>
+                    ) : (
+                      <Navigate to="/complete-profile" />
+                    )
                   ) : (
-                    <Navigate to="/complete-profile" />
+                    <Navigate to="/login" />
                   )
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-            <Route
-              path="/login"
-              element={!user ? <Auth /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/profile"
-              element={user ? <UserProfile /> : <Navigate to="/login" />}
-            />
-            <Route
-              path="/complete-profile"
-              element={
-                user ? (
-                  !needsProfileCompletion ? (
-                    <Navigate to="/" />
+                }
+              />
+              <Route
+                path="/login"
+                element={!user ? <Auth /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/profile"
+                element={user ? <UserProfile /> : <Navigate to="/login" />}
+              />
+              <Route
+                path="/complete-profile"
+                element={
+                  user ? (
+                    !needsProfileCompletion ? (
+                      <Navigate to="/" />
+                    ) : (
+                      <ProfileCompletion
+                        onProfileComplete={() =>
+                          this.setState({ needsProfileCompletion: false })
+                        }
+                      />
+                    )
                   ) : (
-                    <ProfileCompletion
-                      onProfileComplete={() =>
-                        this.setState({ needsProfileCompletion: false })
-                      }
-                    />
+                    <Navigate to="/login" />
                   )
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-          </Routes>
-        </div>
-      </Router>
+                }
+              />
+            </Routes>
+          </div>
+        </Router>
+      </ThemeProvider>
     );
   }
 }

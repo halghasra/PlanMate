@@ -107,7 +107,7 @@ const UserProfile = () => {
   
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="100vh">
-      <Avatar alt="User Profile Picture" src={picUrl} sx={{ width: 96, height: 96, mb: 1 }}/> {/* Display the profile picture here */}
+      <Avatar alt="User Profile Picture" src={picUrl} sx={{ width: 192, height: 192, mb: 1 }}/> {/* Display the profile picture here */}
       <form onSubmit={updateUserProfile}>
         <Box dispaly="flex" alignItems="center" sx={{ mb: 1 }}>
           <TextField
@@ -115,9 +115,10 @@ const UserProfile = () => {
             type="file"
             onChange={event => setProfilePic(event.target.files[0])}
             inputRef={fileInputRef}
+            size='small'
             sx={{ mb: 1 }}
           />
-          <Button onClick={resetFile} variant="contained" color="secondary" sx={{ ml: 1}} type="button">
+          <Button onClick={resetFile} variant="contained" color="secondary" sx={{ ml: 1, '&:hover': {bgcolor: 'secondary.light'}}} type="button">
             Reset
           </Button>
           {profilePic && <Box sx={{ ml:2 }}>{profilePic.name}</Box>}
@@ -125,6 +126,7 @@ const UserProfile = () => {
         <TextField
           name="name"
           label="Name"
+          size="medium"
           value={name}
           onChange={event => setName(event.target.value)}
           required
@@ -134,6 +136,7 @@ const UserProfile = () => {
         <TextField
           name="bio"
           label="Bio"
+          size="medium"
           value={bio}
           onChange={event => setBio(event.target.value)}
           required
@@ -141,7 +144,7 @@ const UserProfile = () => {
           multiline
           sx={{ mb: 1 }}
         />
-        <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2 }}>
+        <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2, color:'white', '&:hover': {bgcolor: 'primary.light'} }}>
         {submitting ? <CircularProgress size={24} /> : "Update profile"}
         </Button>
       </form>
