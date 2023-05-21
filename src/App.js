@@ -10,9 +10,9 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore"; // Imports doc data from firestore
 import Auth from "./components/Auth";
 import LogoutButton from "./components/LogoutButton"; // import the logout button
-//import LoadingSpinner from "./components/LoadingSpinner"; // Import the loading spinner
 import UserProfile from "./components/UserProfile"; //Import the user profile from Firebase
 import ProfileCompletion from "./components/ProfileCompletion";
+import Home from './components/Home';
 import { ThemeProvider, CircularProgress } from "@mui/material";
 import theme from './theme/theme';
 
@@ -83,7 +83,7 @@ class App extends Component {
                 element={
                   user ? (
                     !needsProfileCompletion ? (
-                      <p>Welcome, {user.email}</p>
+                      <Home />
                     ) : (
                       <Navigate to="/complete-profile" />
                     )
