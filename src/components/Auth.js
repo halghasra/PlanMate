@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Paper, Tabs, Tab, Box, Snackbar, Alert } from '@mui/material';
 import Login from './Login';
 import SignUp from './SignUp';
-import logo from '../assets/planmate-logo-purple.png';
+import logo from '../assets/planmate-logo-purple.png'
 
 class Auth extends Component {
   state = { value: 0, error: null };
