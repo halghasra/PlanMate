@@ -1,3 +1,6 @@
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import HamburgerMenu from "./components/Hamburgermenu";
 import React, { Component } from "react";
 import {
   BrowserRouter as Router,
@@ -9,11 +12,11 @@ import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore"; // Imports doc data from firestore
 import Auth from "./components/Auth";
-import LogoutButton from "./components/LogoutButton"; // import the logout button
+//import LogoutButton from "./components/LogoutButton"; // import the logout button
 import UserProfile from "./components/UserProfile"; //Import the user profile from Firebase
 import ProfileCompletion from "./components/ProfileCompletion";
 import Home from './components/Home';
-import { ThemeProvider, CircularProgress } from "@mui/material";
+import { ThemeProvider, CircularProgress, Toolbar } from "@mui/material";
 import theme from './theme/theme';
 
 class App extends Component {
@@ -73,10 +76,12 @@ class App extends Component {
       return <CircularProgress />;
     }
     return (
+      <Router>
       <ThemeProvider theme={theme}>
-        <Router>
+      <Header />
+        <Toolbar>
+        {user && <HamburgerMenu />}
           <div>
-            {user && <LogoutButton />}
             <Routes>
               <Route
                 path="/"
@@ -120,8 +125,10 @@ class App extends Component {
               />
             </Routes>
           </div>
-        </Router>
+        </Toolbar>
+        <Footer />
       </ThemeProvider>
+      </Router>
     );
   }
 }
