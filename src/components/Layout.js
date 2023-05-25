@@ -15,10 +15,10 @@ const Layout = ({ children }) => {
     }
 
     return (
-        <Box sx={{ display: 'flex'}}>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <HamburgerMenu isOpen={isOpen} onOpen={handleDrawerOpen} onClose={handleDrawerClose} />
             <Header onOpen={handleDrawerOpen} />
-            <Box component="main" sx={{ flexGrow: 1, p: 3, marginLeft: isOpen ? 240: 72}}>
+            <Box component="main" sx={{ flexGrow: 1, p: 3, minHeight: 'calc(100vh - 128px)', marginLeft: isOpen ? 240: 72, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 {children}
             </Box>
         </Box>
