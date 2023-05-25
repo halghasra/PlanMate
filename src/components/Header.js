@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Box, IconButton } from '@mui/material';
 import { Menu } from '@mui/icons-material'
 import { LogoSecondary } from '../theme/Logos'
 
-const Header = () => {
+const Header = ({ onOpen }) => {
     return (
         <AppBar position="fixed" color="primary" sx={{ width: '100%' }}>
             <Toolbar>

@@ -15,9 +15,10 @@ import Auth from "./components/Auth";
 //import LogoutButton from "./components/LogoutButton"; // import the logout button
 import UserProfile from "./components/UserProfile"; //Import the user profile from Firebase
 import ProfileCompletion from "./components/ProfileCompletion";
-import Home from './components/Home';
+import Home from "./components/Home";
 import { ThemeProvider, CircularProgress, Toolbar } from "@mui/material";
-import theme from './theme/theme';
+import theme from "./theme/theme";
+import Layout from "./components/Layout";
 
 class App extends Component {
   // start loading while the auth state is being determined
@@ -77,11 +78,8 @@ class App extends Component {
     }
     return (
       <Router>
-      <ThemeProvider theme={theme}>
-      <Header />
-        <Toolbar>
-        {user && <HamburgerMenu />}
-          <div>
+        <ThemeProvider theme={theme}>
+          <Layout>
             <Routes>
               <Route
                 path="/"
@@ -124,10 +122,9 @@ class App extends Component {
                 }
               />
             </Routes>
-          </div>
-        </Toolbar>
-        <Footer />
-      </ThemeProvider>
+            <Footer />
+          </Layout>
+        </ThemeProvider>
       </Router>
     );
   }

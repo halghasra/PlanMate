@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import Header from './Header';
 import HamburgerMenu from './Hamburgermenu';
 
-const Layout = () => {
+const Layout = ({ children }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleDrawerOpen = () => {
@@ -19,7 +19,7 @@ const Layout = () => {
             <HamburgerMenu isOpen={isOpen} onOpen={handleDrawerOpen} onClose={handleDrawerClose} />
             <Header onOpen={handleDrawerOpen} />
             <Box component="main" sx={{ flexGrow: 1, p: 3, marginLeft: isOpen ? 240: 72}}>
-                {/* Main Content */}
+                {children}
             </Box>
         </Box>
     );
