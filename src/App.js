@@ -80,6 +80,8 @@ class App extends Component {
       <Router>
         <ThemeProvider theme={theme}>
           <Layout>
+            <Toolbar>
+            <div>
             <Routes>
               <Route
                 path="/"
@@ -122,7 +124,8 @@ class App extends Component {
                 }
               />
             </Routes>
-            <Footer />
+            </div>
+            </Toolbar>
           </Layout>
         </ThemeProvider>
       </Router>
