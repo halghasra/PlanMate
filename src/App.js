@@ -1,6 +1,6 @@
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import HamburgerMenu from "./components/Hamburgermenu";
+//import Header from "./components/Header";
+//import Footer from "./components/Footer";
+//import HamburgerMenu from "./components/Hamburgermenu";
 import React, { Component } from "react";
 import {
   BrowserRouter as Router,
@@ -19,6 +19,9 @@ import Home from "./components/Home";
 import { ThemeProvider, CircularProgress, Toolbar } from "@mui/material";
 import theme from "./theme/theme";
 import Layout from "./components/Layout";
+import Calendar from "./components/Calendar";
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
 class App extends Component {
   // start loading while the auth state is being determined
@@ -79,6 +82,7 @@ class App extends Component {
     return (
       <Router>
         <ThemeProvider theme={theme}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Layout>
             <Toolbar>
             <div>
@@ -123,10 +127,12 @@ class App extends Component {
                   )
                 }
               />
+              <Route path="/calendar" element={user ? ( <Calendar />) : ( <Navigate to="/calendar"/>)}/>
             </Routes>
             </div>
             </Toolbar>
           </Layout>
+          </LocalizationProvider>
         </ThemeProvider>
       </Router>
     );
