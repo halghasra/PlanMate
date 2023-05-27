@@ -3,22 +3,20 @@ import {
   Tabs,
   Tab,
   Box,
-  Typography,
-  IconButton,
-  LocalizationProvider,
+  Button,
   TextField,
 } from "@mui/material";
-import { DatePicker } from '@mui/x-date-pickers';
-import { useTheme } from "@mui/material/styles";
-import firebase from "firebase";
+import { DatePicker } from "@mui/x-date-pickers";
+import { db, auth } from '../firebase';
+import { doc, set } from "firebase/firestore";
 
 const Calendar = () => {
   // Current date
   const [currentDate, setCurrentDate] = useState(new Date());
   // An array of selected dates
-  const [selectedDates, setSelectedDates] = useState([]);
+  //const [selectedDates, setSelectedDates] = useState([]);
   // Boolean value to indicate whether the date range picker is open
-  const [isRangePickerOpen, setIsRangePickerOpen] = useState(false);
+  //const [isRangePickerOpen, setIsRangePickerOpen] = useState(false);
 
   // event title
   const [eventTitle, setEventTitle] = useState("");
@@ -26,23 +24,23 @@ const Calendar = () => {
   // event description
   const [eventDescription, setEventDescription] = useState("");
 
-  // using the main theme
-  const theme = useTheme();
-
   const handleDateChange = (date) => {
     // set current date to the new date
     setCurrentDate(date);
   };
 
-  const handleRangePickerOpenChange = (isOpen) => {
+ /* const handleRangePickerOpenChange = (isOpen) => {
     // set the boolean value to the new value when the date range picker opens
     setIsRangePickerOpen(isOpen);
   };
+  */
 
+  /*
   const handleSelectedDatesChange = (dates) => {
     // set the selected date array to a new value
     setSelectedDates(dates);
   };
+  */
 
   const handleEventTitleChange = (eventTitle) => {
     // set the event title valriable to a new value
@@ -55,8 +53,24 @@ const Calendar = () => {
   };
 
   const handleCreateEvent = () => {
-    // ... this will be developed later ...
-  }
+    // Create a new event object
+    const event = {
+      title: eventTitle,
+      description: eventDescription,
+      date: currentDate,
+    };
+
+    // get the current user
+    const user = auth.currentUser;
+
+    // Save the event to the database
+    if (user) {
+      const ref = doc(db, "events");
+      ref.set(event);
+    } else {
+        console.log("user is not authenticated, sign in to create an event");
+    }
+  };
 
   return (
     <Box>
@@ -75,10 +89,7 @@ const Calendar = () => {
         />
       </Box>
       <Box sx={{ mt: 2 }}>
-        <TextField
-          label="Event Title"
-          onChange={handleEventTitleChange}
-        />
+        <TextField label="Event Title" onChange={handleEventTitleChange} />
       </Box>
       <Box sx={{ mt: 2 }}>
         <TextField
