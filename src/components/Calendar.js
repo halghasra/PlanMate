@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Tabs,
   Tab,
@@ -8,39 +8,21 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { db, auth } from '../firebase';
-import { doc, set } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { getStorage, ref } from 'firebase/storage';
 
 const Calendar = () => {
   // Current date
   const [currentDate, setCurrentDate] = useState(new Date());
-  // An array of selected dates
-  //const [selectedDates, setSelectedDates] = useState([]);
-  // Boolean value to indicate whether the date range picker is open
-  //const [isRangePickerOpen, setIsRangePickerOpen] = useState(false);
-
   // event title
-  const [eventTitle, setEventTitle] = useState("");
-
+  const [eventTitle, setEventTitle] = useState('');
   // event description
-  const [eventDescription, setEventDescription] = useState("");
+  const [eventDescription, setEventDescription] = useState('');
 
   const handleDateChange = (date) => {
     // set current date to the new date
     setCurrentDate(date);
   };
-
- /* const handleRangePickerOpenChange = (isOpen) => {
-    // set the boolean value to the new value when the date range picker opens
-    setIsRangePickerOpen(isOpen);
-  };
-  */
-
-  /*
-  const handleSelectedDatesChange = (dates) => {
-    // set the selected date array to a new value
-    setSelectedDates(dates);
-  };
-  */
 
   const handleEventTitleChange = (eventTitle) => {
     // set the event title valriable to a new value
@@ -53,23 +35,19 @@ const Calendar = () => {
   };
 
   const handleCreateEvent = () => {
-    // Create a new event object
-    const event = {
-      title: eventTitle,
-      description: eventDescription,
-      date: currentDate,
-    };
 
     // get the current user
     const user = auth.currentUser;
 
-    // Save the event to the database
-    if (user) {
-      const ref = doc(db, "events");
-      ref.set(event);
-    } else {
-        console.log("user is not authenticated, sign in to create an event");
-    }
+    // Create a new document in the events collection
+    const ref = db.collection("events").doc(user.uid);
+
+    // Create a new event object
+    ref.set({
+        title: eventTitle,
+        description: eventDescription,
+        date: currentDate,
+    });
   };
 
   return (

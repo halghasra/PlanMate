@@ -1,13 +1,15 @@
 {
   "main.css": "/static/css/main.be9cd952.chunk.css",
-  "main.js": "/static/js/main.d48e7f64.chunk.js",
-  "main.js.map": "/static/js/main.d48e7f64.chunk.js.map",
+  "main.js": "/static/js/main.9412675a.chunk.js",
+  "main.js.map": "/static/js/main.9412675a.chunk.js.map",
   "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
   "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
-  "static/js/2.935faf73.chunk.js": "/static/js/2.935faf73.chunk.js",
-  "static/js/2.935faf73.chunk.js.map": "/static/js/2.935faf73.chunk.js.map",
+  "static/js/2.c89f4a12.chunk.js": "/static/js/2.c89f4a12.chunk.js",
+  "static/js/2.c89f4a12.chunk.js.map": "/static/js/2.c89f4a12.chunk.js.map",
   "index.html": "/index.html",
-  "precache-manifest.a087dcca695a7c44c9865fb0b5780dd2.js": "/precache-manifest.a087dcca695a7c44c9865fb0b5780dd2.js",
+  "precache-manifest.75e9bbb1d223730de492241ec530d925.js": "/precache-manifest.75e9bbb1d223730de492241ec530d925.js",
   "service-worker.js": "/service-worker.js",
-  "static/css/main.be9cd952.chunk.css.map": "/static/css/main.be9cd952.chunk.css.map"
+  "static/css/main.be9cd952.chunk.css.map": "/static/css/main.be9cd952.chunk.css.map",
+  "static/media/planmate-logo-purple.png": "/static/media/planmate-logo-purple.61a31776.png",
+  "static/media/planmate-logo-white.png": "/static/media/planmate-logo-white.b0cf3a20.png"
 }
