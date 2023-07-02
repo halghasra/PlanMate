@@ -1,48 +1,71 @@
+/**
+ * @desc: This component represents the user profile page of the application where the user can edit/update their profile information.
+ * It uses the TextField, Button, Box, Avatar, and CircularProgress components from Material UI to create a form for the user to update their profile.
+ * The component is rendered when the user clicks on the Profile link in the navigation menu.
+ * @return {JSX} Return the user profile component
+ */
+
 import React, { useState, useEffect, useRef } from 'react';
 import { auth, db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { TextField, Button, Box, Avatar, CircularProgress } from '@mui/material';
-//import LoadingSpinner from './LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // to use Firestorage to store Profile pictures
 
-// Adding state for name and bio
-// Adding a loading state and setting it to true until the user data is fetched from Firestore
+
 const UserProfile = () => {
+  // Adding state for name and bio
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false); // used to render a spinner when a profile update is submitted
-  const navigate = useNavigate();
-  const [profilePic, setProfilePic] = useState(null);
-  const [picUrl, setPicUrl] = useState(''); // store the url of the uploaded pic
-  const fileInputRef = useRef(null); // initialise a reference to the file input 
 
-  // Asynchronous function to get the user data from Firestore
+  // Adding a loading state and setting it to true until the user data is fetched from Firestore
+  const [loading, setLoading] = useState(true);
+
+  // Adding a submitting state to render a spinner when a profile update is submitted
+  const [submitting, setSubmitting] = useState(false);
+
+  // Adding a navigate hook to redirect the user to the home page after updating the profile
+  const navigate = useNavigate();
+
+  // Adding state for the profile picture and its URL
+  const [profilePic, setProfilePic] = useState(null);
+  const [picUrl, setPicUrl] = useState('');
+
+  // Adding a reference to the file input
+  const fileInputRef = useRef(null);
+
+  // Adding an async function to fetch the user data from Firestore
   const fetchUserData = async () => {
     const docRef = doc(db, "users", auth.currentUser.uid);
     const docSnap = await getDoc(docRef);
 
+    // if the document exists, set the state of the user profile
     if (docSnap.exists()) {
       setName(docSnap.data().name);
       setBio(docSnap.data().bio);
       setPicUrl(docSnap.data().picUrl); // fetch the picture URL
-    } else {
+    } 
+    // otherwise, log an error message
+    else {
       console.log("No such documents!");
     }
+    // set the loading state to false after fetching the data
     setLoading(false);
   };
 
+  // Adding an async function to update the user profile
   const updateUserProfile = async (event) => {
     event.preventDefault();
     setSubmitting(true);
     
+    // Adding validation to check if the name and bio fields are not empty
     if (!name || !bio) {
       console.log('All fields are required');
       setSubmitting(false);
       return;
     }
   
+    // Prepare the data to be updated
     const userData = {
       name,
       bio,
@@ -50,12 +73,13 @@ const UserProfile = () => {
       uid: auth.currentUser.uid,
     };
   
+    // Adding a condition to check if the user has selected a new profile picture
     if (profilePic) {
       const storage = getStorage();
       const storageRef = ref(storage, 'profilePics/' + profilePic.name);
       const uploadTask = uploadBytesResumable(storageRef, profilePic);
   
-      // Use then method to wait for the upload to complete
+      // Use a promise to wait for the upload to complete
       await new Promise((resolve, reject) => {
         uploadTask.on('state_changed', 
           (snapshot) => {
@@ -77,9 +101,13 @@ const UserProfile = () => {
       });
     }
 
+    // Adding a try/catch block to update the user data in Firestore
     try {
+      // Update the user document in users collection
       await setDoc(doc(db, "users", auth.currentUser.uid), userData);
       console.log('User data updated in Firestore');
+
+      // Delay the navigation to the home page after updating the user data
       setTimeout(() => {
         navigate('/') // Navigate the user to home page after updating
       }, 2000);
@@ -89,6 +117,7 @@ const UserProfile = () => {
     setSubmitting(false);
   };
 
+  // Function to reset the selected file
   const resetFile = (event) => {
     event.preventDefault(); // prevent the form from being submitted
     fileInputRef.current.value = ""; // clear the value in the file input
@@ -100,11 +129,12 @@ const UserProfile = () => {
     fetchUserData();
   }, []);
   
-  // if the loading state is true, the component will render a loading message
+  // if the loading state is true, the component will render a loading spinner
   if (loading) {
     return <CircularProgress />;
   }
   
+  // Otherwise, the component will render the user profile form
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="100vh">
       <Avatar alt="User Profile Picture" src={picUrl} sx={{ width: 192, height: 192, mb: 1 }}/> {/* Display the profile picture here */}

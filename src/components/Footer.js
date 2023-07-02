@@ -1,3 +1,10 @@
+/**
+ * @desc This component represents the footer section of the application.
+ * It uses the Box and Typography components from Material UI to create a footer with a text message.
+ * The component is fixed at the bottom of the page and spans the entire width.
+ * @return {JSX} Return the footer component
+ */
+
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 

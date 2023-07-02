@@ -1,3 +1,10 @@
+/**
+ * @desc: Adding a profile completion form to the application using Firebase Firestore.
+ * The form uses the TextField, Button, Box, Avatar, and CircularProgress components from Material UI to create a form for the user to complete their profile.
+ * The component is only rendered when the user signs up for the first time.
+ * @return {JSX} Return the profile completion form component
+ */
+
 import React, { useState, useRef } from 'react';
 import { TextField, Button, Box, Snackbar, Avatar } from '@mui/material';
 import { doc, setDoc } from "firebase/firestore";
@@ -6,26 +13,43 @@ import { useNavigate } from 'react-router-dom'; // to be used in navigating the 
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from '@firebase/storage';
 import { CircularProgress } from '@mui/material'; // import circularProgress for the loading spinner
 
-function ProfileCompletion({ onProfileComplete }) { //destructure onProfileComplete from props
-  const [name, setName] = useState('');
+// ProfileCompletion component
+function ProfileCompletion({ onProfileComplete }) { 
+  // A state for name and bio
+  const [name, setName] = useState(''); 
   const [bio, setBio] = useState('');
-  const navigate = useNavigate(); // initialise navigate
-  const [error, setError] = useState(false); // Added a new state for handling error display
-  const [profilePic, setProfilePic] = useState(null);
-  const [picUrl, setPicUrl] = useState(''); // store the url of the uploaded pic
-  const fileInputRef = useRef(null) //used to display the name of the selected file
-  const [loading, setLoading] = useState(false); // state for handling form submission loading state //
 
+  // A navigate hook to redirect the user to the home page after updating the profile
+  const navigate = useNavigate();
+
+  // A state for handling error display
+  const [error, setError] = useState(false); // Added a new state for handling error display
+
+  // A state for the profile picture and its URL
+  const [profilePic, setProfilePic] = useState(null);
+  const [picUrl, setPicUrl] = useState('');
+
+  // A reference to the file input
+  const fileInputRef = useRef(null);
+
+  // A state for handling form submission loading state
+  const [loading, setLoading] = useState(false);
+
+  // An async function to update the user profile  
   const handleSubmit = async (event) => {
+    // Preventing the default behavior of the form submission
     event.preventDefault();
-    setLoading(true); // set loading state to true before form submission begins.
+    // Setting the loading state to true before form submission begins
+    setLoading(true);
     
     // Validating name and bio section
     if (!name || !bio) {
-      setError(true); // If fields are empty, set error to true
+      // If name or bio is empty, set the error state to true and return
+      setError(true);
       return;
     }
 
+    // Creating a user data object
     const userData = {
       name,
       bio,
@@ -33,6 +57,7 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
       uid: auth.currentUser.uid, // uid is taken from auth
     };
 
+    // Uploading the profile picture to Firestorage
     if (profilePic) {
       const storage = getStorage();
       const storageRef = ref(storage, 'profilePics/' + profilePic.name);
@@ -60,33 +85,41 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
     }
 
     try {
-      // Here, 'users' is the name of my Firestore collection, and I'm using
-      // the user's uid as the document ID
+      // Here, 'users' is the name of my Firestore collection, and I'm using the user's uid as the document ID
       await setDoc(doc(db, "users", auth.currentUser.uid), userData);
-      // Once the user data has been added to Firestore, we can redirect the user
-      // to the home page or somewhere else
+
+      // Once the user data has been added to Firestore, we can redirect the user to the home page or somewhere else
       console.log('User data added to Firestore');
-      onProfileComplete(); // call onProfileComplete function
+
+      // call onProfileComplete function
+      onProfileComplete(); 
+      // Set a timeout function to delay the navigate for a couple of seconds to give the onProfileComplete() enough time to update the state and navigate to home page.
       setTimeout(() => {
         navigate('/') // when the profile is completed, navigate user to home page
-      }, 2000); // Set a timeout function to delay the navigate for a couple of seconds to give
-      // the onProfileComplete() enough time to update the state and navigate to home page.
-      setLoading(false); // Set loading state back to false once form submition is complete
+      }, 2000); 
+
+      // Set loading state back to false once form submition is completed
+      setLoading(false); 
     } catch (error) {
-      setLoading(false); // Also set loading state back to false in case of an error
+      // Also set loading state back to false in case of an error
+      setLoading(false);
       console.error('Error adding user data to Firestore', error);
     }
   };
 
+  // A function to handle file change and set the selected file as a profile picture
   const handleFileChange = (event) => {
     setProfilePic(event.target.files[0]);
   };
 
   // Adds the ability to reset the selected file
   const resetFile = (event) => {
-    event.preventDefault(); // prevent the form from being submitted
-    fileInputRef.current.value = ""; // clear the value in the file input
-    setProfilePic(null); // clear the selected file
+    // prevent the form from being submitted
+    event.preventDefault(); 
+    // clear the value in the file input
+    fileInputRef.current.value = ""; 
+    // clear the selected file
+    setProfilePic(null); 
   }
 
   const handleClose = (event, reason) => {
@@ -96,6 +129,7 @@ function ProfileCompletion({ onProfileComplete }) { //destructure onProfileCompl
     setError(false);
   } // this handles the dismissal of the snackbar
 
+  
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="100vh">
       {loading ? <CircularProgress /> : (

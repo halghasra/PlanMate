@@ -1,3 +1,9 @@
+/**
+ * @desc: The header componend is used to render the header section of the application.
+ * It uses the AppBar, Toolbar, Box, IconButton, InputBase, and Avatar components from Material UI to create a header with a search bar, menu, and avatar.
+ * The component is rendered when the user is logged in.
+ * @return {JSX} Return the header component
+ */
 import React, { useEffect, useState } from "react";
 import { AppBar, Toolbar, Box, IconButton, InputBase, Avatar } from "@mui/material";
 import { Menu, Notifications, Search as SearchIcon } from "@mui/icons-material";
@@ -8,7 +14,8 @@ import { doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from "firebase/auth";
 
 
-const Search = styled("div")(({ theme }) => ({
+// Create a styled component for the search bar
+const Search = styled("div")(({ theme }) => ({ 
   position: "relative",
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
@@ -24,6 +31,7 @@ const Search = styled("div")(({ theme }) => ({
   },
 }));
 
+// Create a styled component for the search icon wrapper
 const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
   height: "100%",
@@ -34,6 +42,7 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   justifyContent: "center",
 }));
 
+// Create a styled component for the search input
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
@@ -48,10 +57,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Header = ({ onOpen }) => {
+  // Create a state variable for the user
     const [user, setUser] = useState(null);
     
+    // Get the user from the database
     useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+        // If the user is logged in, get the user from the database
         if (authUser) {
           const docRef = doc(db, "users", authUser.uid);
           const docSnap = await getDoc(docRef);
@@ -60,9 +72,11 @@ const Header = ({ onOpen }) => {
           }
         }
       });
+      // Return the unsubscribe method to prevent memory leaks
       return unsubscribe;
     }, []);
   
+    // Render the header component
     return (
       <AppBar position="fixed" color="primary" sx={{ width: '100%' }}>
         <Toolbar>
