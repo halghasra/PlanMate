@@ -78,7 +78,7 @@ const Header = ({ onOpen }) => {
   
     // Render the header component
     return (
-      <AppBar position="fixed" color="primary" sx={{ width: '100%' }}>
+      <AppBar position="static" color="primary" sx={{ width: '100%' }}>
         <Toolbar>
           <IconButton color ="inherit" onClick={onOpen} edge="start">
             <Menu />

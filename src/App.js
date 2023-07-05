@@ -1,6 +1,3 @@
-//import Header from "./components/Header";
-//import Footer from "./components/Footer";
-//import HamburgerMenu from "./components/Hamburgermenu";
 import React, { Component } from "react";
 import {
   BrowserRouter as Router,
@@ -12,21 +9,24 @@ import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore"; // Imports doc data from firestore
 import Auth from "./components/Auth";
-//import LogoutButton from "./components/LogoutButton"; // import the logout button
 import UserProfile from "./components/UserProfile"; //Import the user profile from Firebase
 import ProfileCompletion from "./components/ProfileCompletion";
 import Home from "./components/Home";
 import { ThemeProvider, CircularProgress, Toolbar } from "@mui/material";
 import theme from "./theme/theme";
 import Layout from "./components/Layout";
-import Calendar from "./components/Calendar";
+import Calendar from "./components/FullCalendar";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
 class App extends Component {
   // start loading while the auth state is being determined
   // added needsProfileCompletion flag to the state
-  state = { user: null, loading: true, needsProfileCompletion: false };
+  state = { 
+    user: null,
+    loading: true,
+    needsProfileCompletion: false 
+  };
 
   /* Rewriting componentDidMount to add a user profile check.
      This will check to see if the user is signed in and doesn't have a complete profile yet.

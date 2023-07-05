@@ -1,3 +1,9 @@
+/**
+ * @desc: This component is used to log out the user from the application.
+ * It uses the Button component from Material UI to create a button to log out the user.
+ * The component is rendered when the user clicks on the Logout link in the navigation menu.
+ * @return {JSX} Return the logout button component
+ */
 import React from 'react';
 import { Button } from '@mui/material';
 import { auth, signOut } from '../firebase';
