@@ -12,12 +12,13 @@ import Auth from "./components/Auth";
 import UserProfile from "./components/UserProfile"; //Import the user profile from Firebase
 import ProfileCompletion from "./components/ProfileCompletion";
 import Home from "./components/Home";
-import { ThemeProvider, CircularProgress, Toolbar } from "@mui/material";
+import { ThemeProvider, CircularProgress } from "@mui/material";
 import theme from "./theme/theme";
-import Layout from "./components/Layout";
 import Calendar from "./components/FullCalendar";
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 class App extends Component {
   // start loading while the auth state is being determined
@@ -82,17 +83,18 @@ class App extends Component {
     return (
       <Router>
         <ThemeProvider theme={theme}>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Layout>
-            <Toolbar>
-            <div>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Header />
             <Routes>
               <Route
                 path="/"
                 element={
                   user ? (
                     !needsProfileCompletion ? (
-                      <Home />
+                      <>
+                        <Home />
+                        <Calendar />
+                      </>
                     ) : (
                       <Navigate to="/complete-profile" />
                     )
@@ -127,11 +129,8 @@ class App extends Component {
                   )
                 }
               />
-              <Route path="/calendar" element={user ? ( <Calendar />) : ( <Navigate to="/calendar"/>)}/>
             </Routes>
-            </div>
-            </Toolbar>
-          </Layout>
+            <Footer />
           </LocalizationProvider>
         </ThemeProvider>
       </Router>

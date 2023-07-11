@@ -6,12 +6,13 @@
  */
 import React, { useEffect, useState } from "react";
 import { AppBar, Toolbar, Box, IconButton, InputBase, Avatar } from "@mui/material";
-import { Menu, Notifications, Search as SearchIcon } from "@mui/icons-material";
+import { Notifications, Search as SearchIcon } from "@mui/icons-material";
 import { styled, alpha } from "@mui/material/styles";
 import { LogoSecondary } from "../theme/Logos";
 import { auth, db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 
 // Create a styled component for the search bar
@@ -56,9 +57,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const Header = ({ onOpen }) => {
-  // Create a state variable for the user
+const Header = () => {
+    // Create a state variable for the user
     const [user, setUser] = useState(null);
+    // Create a navigate hook
+    const navigate = useNavigate();
     
     // Get the user from the database
     useEffect(() => {
@@ -75,14 +78,16 @@ const Header = ({ onOpen }) => {
       // Return the unsubscribe method to prevent memory leaks
       return unsubscribe;
     }, []);
+
+    // Add a handleAvatarClick method to navigate to the profile page
+    const handleAvatarClick = () => { 
+      navigate('/profile');
+    };
   
     // Render the header component
     return (
       <AppBar position="static" color="primary" sx={{ width: '100%' }}>
         <Toolbar>
-          <IconButton color ="inherit" onClick={onOpen} edge="start">
-            <Menu />
-          </IconButton>
           <Box component="span" sx={{ flexGrow: 1 }}>
             <img src={LogoSecondary} alt="PlanMate logo" height="50" />
           </Box>
@@ -99,7 +104,7 @@ const Header = ({ onOpen }) => {
             <Notifications />
           </IconButton>
           {user && (
-            <IconButton color="inherit">
+            <IconButton color="inherit" onClick={handleAvatarClick}>
               <Avatar src={user.picUrl} alt="User Avatar" />
             </IconButton>
           )}
