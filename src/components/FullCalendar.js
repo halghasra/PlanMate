@@ -4,7 +4,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import theme from "../theme/theme";
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box } from "@mui/material";
 
 export default function Calendar() {
     const handleDateClick = (arg) => {
@@ -20,11 +20,13 @@ export default function Calendar() {
         );
     };
 
+
+
     return (
         <ThemeProvider theme={theme}>
           <Box
             sx={{
-              height: "100hv", // Subtract the height of the header
+              height: "100hv",
               width: "100%",
               display: "flex",
               justifyContent: "center",
@@ -38,19 +40,11 @@ export default function Calendar() {
                 weekends={false}
                 dateClick={(e) => handleDateClick(e)}
                 events={[
-                  { title: "event 1", date: "2021-05-07" },
-                  { title: "event 2", date: "2021-05-17" },
+                  { title: "event 1", date: "2023-07-07" },
+                  { title: "event 2", date: "2023-07-17" },
                 ]}
                 eventContent={renderEventContent}
               />
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-                <Button variant="contained" color="primary" sx={{ mx: 1 }}>
-                  Button 1
-                </Button>
-                <Button variant="contained" color="secondary" sx={{ mx: 1 }}>
-                  Button 2
-                </Button>
-              </Box>
             </Box>
           </Box>
         </ThemeProvider>

@@ -12,7 +12,7 @@ import Auth from "./components/Auth";
 import UserProfile from "./components/UserProfile"; //Import the user profile from Firebase
 import ProfileCompletion from "./components/ProfileCompletion";
 import Home from "./components/Home";
-import { ThemeProvider, CircularProgress, Box } from "@mui/material";
+import { ThemeProvider, CircularProgress } from "@mui/material";
 import theme from "./theme/theme";
 import Calendar from "./components/FullCalendar";
 import { LocalizationProvider } from '@mui/x-date-pickers';
