@@ -5,18 +5,17 @@
  * @return {JSX} Return the layout component
  */
 import React from "react";
-import { Box } from "@mui/material";
+import { Box } from "@mui/system";
 import Header from "./Header";
 import Footer from "./Footer";
 
-// Add a Layout component to wrap the Header, HamburgerMenu, Footer, and children components
+// Add a Layout component to wrap the Header, Footer, and children components
 const Layout = ({ children }) => {
   return (
     <Box
       sx={{
-        display: "grid",
-        gridTemplateColumns: "auto",
-        gridTemplateRows: "auto 1fr auto",
+        display: "flex",
+        flexDirection: "column",
         minHeight: "100vh",
       }}
     >
@@ -24,14 +23,23 @@ const Layout = ({ children }) => {
       <Box
         component="main"
         sx={{
-            gridColumn: '1 / 2',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            p: 3,
-          }}
+          flexGrow: 1,
+          marginTop: (theme) => theme.spacing(1),
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-start", // Align content to the top
+          p: 3,
+          paddingTop: (theme) => theme.spacing(1),
+        }}
       >
-        {children}
+        <Box
+          sx={{
+            maxWidth: "1000px",
+            width: "100%",
+          }}
+        >
+          {children}
+        </Box>
       </Box>
       <Footer />
     </Box>

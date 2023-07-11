@@ -12,13 +12,13 @@ import Auth from "./components/Auth";
 import UserProfile from "./components/UserProfile"; //Import the user profile from Firebase
 import ProfileCompletion from "./components/ProfileCompletion";
 import Home from "./components/Home";
-import { ThemeProvider, CircularProgress } from "@mui/material";
+import { ThemeProvider, CircularProgress, Box } from "@mui/material";
 import theme from "./theme/theme";
 import Calendar from "./components/FullCalendar";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Layout from "./components/Layout";
 
 class App extends Component {
   // start loading while the auth state is being determined
@@ -84,52 +84,63 @@ class App extends Component {
       <Router>
         <ThemeProvider theme={theme}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Header />
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  user ? (
-                    !needsProfileCompletion ? (
-                      <>
-                        <Home />
-                        <Calendar />
-                      </>
-                    ) : (
-                      <Navigate to="/complete-profile" />
-                    )
-                  ) : (
-                    <Navigate to="/login" />
-                  )
-                }
-              />
-              <Route
-                path="/login"
-                element={!user ? <Auth /> : <Navigate to="/" />}
-              />
-              <Route
-                path="/profile"
-                element={user ? <UserProfile /> : <Navigate to="/login" />}
-              />
-              <Route
-                path="/complete-profile"
-                element={
-                  user ? (
-                    !needsProfileCompletion ? (
-                      <Navigate to="/" />
-                    ) : (
-                      <ProfileCompletion
-                        onProfileComplete={() =>
-                          this.setState({ needsProfileCompletion: false })
-                        }
-                      />
-                    )
-                  ) : (
-                    <Navigate to="/login" />
-                  )
-                }
-              />
-            </Routes>
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <Layout>
+                      {user ? (
+                        !needsProfileCompletion ? (
+                          <>
+                            <Home />
+                            <Calendar />
+                          </>
+                        ) : (
+                          <Navigate to="/complete-profile" />
+                        )
+                      ) : (
+                        <Navigate to="/login" />
+                      )}
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/login"
+                  element={
+                    <Layout>
+                      {!user ? <Auth /> : <Navigate to="/" />}
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <Layout>
+                      {user ? <UserProfile /> : <Navigate to="/login" />}
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/complete-profile"
+                  element={
+                    <Layout>
+                      {user ? (
+                        !needsProfileCompletion ? (
+                          <Navigate to="/" />
+                        ) : (
+                          <ProfileCompletion
+                            onProfileComplete={() =>
+                              this.setState({ needsProfileCompletion: false })
+                            }
+                          />
+                        )
+                      ) : (
+                        <Navigate to="/login" />
+                      )}
+                    </Layout>
+                  }
+                />
+              </Routes>
             <Footer />
           </LocalizationProvider>
         </ThemeProvider>
