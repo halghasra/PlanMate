@@ -93,7 +93,7 @@ class App extends Component {
                         !needsProfileCompletion ? (
                           <>
                             <Home />
-                            <Calendar />
+                            <Calendar user={user} />
                           </>
                         ) : (
                           <Navigate to="/complete-profile" />
