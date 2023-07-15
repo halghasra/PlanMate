@@ -22,6 +22,9 @@ export default function Calendar({ user}) {
         // Map the events data and update the state
         const eventsData = eventsSnapshot.docs.map((doc) => ({
           id: doc.id,
+          title: doc.data().title,
+          start: doc.data().startDate, // specify the start property
+          end: doc.data().endDate, // specify the end property
           ...doc.data(),
         }));
         setEvents(eventsData);
@@ -56,7 +59,7 @@ export default function Calendar({ user}) {
     const docRef = await addDoc(collection(db, "events"), event);
     setEvents((prevEvents) => [
       ...prevEvents,
-      { id: docRef.id, ...event },
+      { id: docRef.id, title, start: startDate, end: endDate, ...event },
     ]);
     // Close the popup
     setPopupOpen(false);
