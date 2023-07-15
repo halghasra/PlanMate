@@ -35,14 +35,19 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
 
     return (
         <Dialog open={isOpen} onClose={onClose}>
+            <Box sx={{ minWidth: 600 }}>
             <DialogTitle>Create Event</DialogTitle>
             <DialogContent>
-                <Box sx={{ marginBottom: 2 }}>
+                <Box sx={{ marginBottom: 2, marginTop: 2 }}>
                     <TextField
                         name="title"
                         label="Title"
                         value={eventData.title}
                         onChange={handleChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        fullWidth
                     />
                 </Box>
                 <Box sx={{ marginBottom: 2 }}>
@@ -51,6 +56,10 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
                         label="Event Type"
                         value={eventData.eventType}
                         onChange={handleChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        fullWidth
                     />
                 </Box>
                 <Box sx={{ marginBottom: 2 }}>
@@ -60,6 +69,10 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
                         type="date"
                         value={eventData.startDate}
                         onChange={handleChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        fullWidth
                     />
                 </Box>
                 <Box sx={{ marginBottom: 2 }}>
@@ -69,6 +82,10 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
                         type="date"
                         value={eventData.endDate}
                         onChange={handleChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        fullWidth
                     />
                 </Box>
                 <Box sx={{ marginBottom: 2 }}>
@@ -78,6 +95,10 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
                         type="time"
                         value={eventData.startTime}
                         onChange={handleChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        fullWidth
                     />
                 </Box>
                 <Box sx={{ marginBottom: 2 }}>
@@ -87,6 +108,10 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
                         type="time"
                         value={eventData.endTime}
                         onChange={handleChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        fullWidth
                     />
                 </Box>
                 <Box sx={{ marginBottom: 2 }}>
@@ -97,6 +122,10 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
                         rows={4}
                         value={eventData.notes}
                         onChange={handleChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        fullWidth
                     />
                 </Box>
             </DialogContent>
@@ -104,6 +133,7 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
                 <Button onClick={onClose}>Cancel</Button>
                 <Button onClick={handleSubmit}>Create</Button>
             </DialogActions>
+            </Box>
         </Dialog>
     );
 };
