@@ -5,18 +5,30 @@
  * @return {JSX} Return the header component
  */
 import React, { useEffect, useState } from "react";
-import { AppBar, Toolbar, Box, IconButton, InputBase, Avatar } from "@mui/material";
-import { Notifications, Search as SearchIcon } from "@mui/icons-material";
+import {
+  AppBar,
+  Toolbar,
+  Box,
+  IconButton,
+  InputBase,
+  Avatar,
+  Menu,
+  MenuItem,
+} from "@mui/material";
+import {
+  Notifications,
+  Search as SearchIcon,
+  ArrowBack,
+} from "@mui/icons-material";
 import { styled, alpha } from "@mui/material/styles";
 import { LogoSecondary } from "../theme/Logos";
-import { auth, db } from '../firebase';
-import { doc, getDoc } from 'firebase/firestore';
-import { onAuthStateChanged } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-
+import { auth, db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Create a styled component for the search bar
-const Search = styled("div")(({ theme }) => ({ 
+const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
@@ -58,59 +70,119 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Header = () => {
-    // Create a state variable for the user
-    const [user, setUser] = useState(null);
-    // Create a navigate hook
-    const navigate = useNavigate();
-    
-    // Get the user from the database
-    useEffect(() => {
-      const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
-        // If the user is logged in, get the user from the database
-        if (authUser) {
-          const docRef = doc(db, "users", authUser.uid);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            setUser(docSnap.data());
-          }
-        }
-      });
-      // Return the unsubscribe method to prevent memory leaks
-      return unsubscribe;
-    }, []);
+  // Create a state variable for the user
+  const [user, setUser] = useState(null);
+  // Create a navigate hook
+  const navigate = useNavigate();
 
-    // Add a handleAvatarClick method to navigate to the profile page
-    const handleAvatarClick = () => { 
-      navigate('/profile');
-    };
-  
-    // Render the header component
-    return (
-      <AppBar position="static" color="primary" sx={{ width: '100%' }}>
-        <Toolbar>
-          <Box component="span" sx={{ flexGrow: 1 }}>
-            <img src={LogoSecondary} alt="PlanMate logo" height="50" />
-          </Box>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-          <IconButton color="inherit">
-            <Notifications />
+  // Creata a location hoook to use it for implementing a simple app menu
+  const location = useLocation();
+  // Create a state variable for the menu
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  // the element that the menu is anchored to
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  // Get the user from the database
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+      // If the user is logged in, get the user from the database
+      if (authUser) {
+        const docRef = doc(db, "users", authUser.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setUser(docSnap.data());
+        }
+      }
+    });
+    // Return the unsubscribe method to prevent memory leaks
+    return unsubscribe;
+  }, []);
+
+  // Add a handleAvatarClick method to navigate to the profile page
+  const handleAvatarClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setMenuOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setMenuOpen(false);
+  };
+
+  const handleMenuItemClick = (menuItem) => {
+    handleMenuClose();
+    if (menuItem === "profile") {
+      navigate("/profile");
+    } else if (menuItem === "logout") {
+      // Call the signOut function from the auth object to sign out the user
+      signOut(auth)
+        // Use the navigate function to redirect the user to the login page
+        .then(() => {
+          navigate("/login");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
+
+  const handleReturnClick = () => {
+    navigate(-1);
+  };
+
+  // Render the header component
+  return (
+    <AppBar position="static" color="primary" sx={{ width: "100%" }}>
+      <Toolbar>
+        {!location.pathname === "/" && (
+          <IconButton color="inherit" onClick={handleReturnClick}>
+            <ArrowBack />
           </IconButton>
-          {user && (
+        )}
+        <Box component="span" sx={{ flexGrow: 1 }}>
+          <img src={LogoSecondary} alt="PlanMate logo" height="50" />
+        </Box>
+        <Search>
+          <SearchIconWrapper>
+            <SearchIcon />
+          </SearchIconWrapper>
+          <StyledInputBase
+            placeholder="Search…"
+            inputProps={{ "aria-label": "search" }}
+          />
+        </Search>
+        <IconButton color="inherit">
+          <Notifications />
+        </IconButton>
+        {user && (
+          <div>
             <IconButton color="inherit" onClick={handleAvatarClick}>
               <Avatar src={user.picUrl} alt="User Avatar" />
             </IconButton>
-          )}
-        </Toolbar>
-      </AppBar>
-    );
-  };
-  
-  export default Header;
+            <Menu
+              anchorEl={anchorEl}
+              open={isMenuOpen}
+              onClose={handleMenuClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <MenuItem onClick={() => handleMenuItemClick("profile")}>
+                Profile
+              </MenuItem>
+              <MenuItem onClick={() => handleMenuItemClick("logout")}>
+                Sign Out
+              </MenuItem>
+            </Menu>
+          </div>
+        )}
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export default Header;
