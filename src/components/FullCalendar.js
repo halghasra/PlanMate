@@ -51,27 +51,27 @@ export default function Calendar({ user }) {
     const {
       title,
       eventType,
-      start,
-      end,
+      startDate,
+      endDate,
       startTime,
       endTime,
       notes,
       isFullDay,
     } = eventData;
 
-    let eventStart = start;
-    let eventEnd = end;
+    let eventStart = startDate;
+    let eventEnd = endDate;
     let groupId = nanoid(); // Generate a unique groupId for the event using nanoid
 
     if (isFullDay) {
       // If it's a full-day event, adjust the end date by adding one day
-      const nextDay = new Date(end);
+      const nextDay = new Date(endDate);
       nextDay.setDate(nextDay.getDate() + 1);
-      eventEnd = nextDay.toISOString().split("T")[0];
+      eventEnd = nextDay.toISOString();
     } else if (!isFullDay && startTime && endTime) {
       // If both start time and end time are provided, it's a timed event
-      eventStart = `${start}T${startTime}:00`;
-      eventEnd = `${end}T${endTime}:00`;
+      eventStart = `${startDate}T${startTime}:00`;
+      eventEnd = `${endDate}T${endTime}:00`;
     }
 
     // Create a new event
