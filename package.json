@@ -22,7 +22,7 @@
     "chownr": "^2.0.0",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.7",
-    "firebase": "^9.18.0",
+    "firebase": "^9.1.3",
     "firebaseui": "^6.0.2",
     "fs-minipass": "^2.1.0",
     "minimist": "^1.2.8",
