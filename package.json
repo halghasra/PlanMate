@@ -6,7 +6,6 @@
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
-    "@firebase/storage": "^0.11.2",
     "@fullcalendar/core": "^6.1.8",
     "@fullcalendar/daygrid": "^6.1.8",
     "@fullcalendar/interaction": "^6.1.8",
@@ -14,16 +13,15 @@
     "@fullcalendar/react": "^6.1.8",
     "@fullcalendar/timegrid": "^6.1.8",
     "@mui/base": "^5.0.0-beta.2",
-    "@mui/icons-material": "^5.11.16",
-    "@mui/lab": "^5.0.0-alpha.131",
-    "@mui/material": "^5.13.1",
-    "@mui/system": "^5.13.2",
-    "@mui/x-date-pickers": "^6.9.1",
+    "@mui/icons-material": "^5.14.1",
+    "@mui/lab": "^5.0.0-alpha.137",
+    "@mui/material": "^5.14.2",
+    "@mui/system": "^5.14.1",
+    "@mui/x-date-pickers": "^6.10.2",
     "chownr": "^2.0.0",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.7",
-    "firebase": "^9.1.3",
-    "firebaseui": "^6.0.2",
+    "firebase": "^10.1.0",
     "fs-minipass": "^2.1.0",
     "minimist": "^1.2.8",
     "minipass": "^5.0.0",
@@ -34,7 +32,7 @@
     "react-bootstrap-daterangepicker": "^8.0.0",
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1",
-    "react-redux": "^8.0.5",
+    "react-redux": "^8.1.2",
     "react-router-dom": "^6.11.2",
     "react-scripts": "^5.0.1",
     "react-select": "^5.7.3",
@@ -63,5 +61,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
 }
