@@ -117,6 +117,7 @@ export default function Calendar({ user }) {
             events={events}
             eventContent={renderEventContent}
             editable={true}
+            selectable={true}
           />
         </Box>
       </Box>

@@ -12,9 +12,10 @@ import {
 } from "@mui/material";
 
 const EventPopup = ({ isOpen, onClose, onSubmit }) => {
+  const currentDate = new Date().toISOString().slice(0, 16); // Get the current date and time in the format "YYYY-MM-DDThh:mm"
   const [eventData, setEventData] = useState({
     title: "",
-    start: "",
+    start: currentDate, // Set the current date and time as the default start date and time,
     end: "",
     notes: "",
     isFullDay: false, // added isFullDay flag to the state to give the option to the user to select if the event is a full-day event or not
@@ -43,6 +44,16 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
     setEventData((prevData) => ({
       ...prevData,
       [name]: checked,
+    }));
+  };
+
+  // added function to handle the end time click event
+  const handleEndTimeClick = (minutes) => {
+    const start = new Date(eventData.start);
+    const end = new Date(start.getTime() + minutes * 60000) // Calculate end time by adding the minutes to the start time
+    setEventData((prevData) => ({
+      ...prevData,
+      end: end.toISOString().slice(0, 16), // Convert the end time to the format "YYYY-MM-DDThh:mm"
     }));
   };
 
@@ -92,6 +103,12 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
               }}
               fullWidth
             />
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <Button onClick={() => handleEndTimeClick(15)}>15 minutes</Button>
+              <Button onClick={() => handleEndTimeClick(30)}>30 minutes</Button>
+              <Button onClick={() => handleEndTimeClick(45)}>45 minutes</Button>
+              <Button onClick={() => handleEndTimeClick(60)}>1 hour</Button>
+            </Box>
           </Box>
           <Box sx={{ marginBottom: 2 }}>
             <TextField
