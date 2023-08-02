@@ -1,15 +1,14 @@
 {
-  "main.css": "/static/css/main.be9cd952.chunk.css",
-  "main.js": "/static/js/main.f5ee94f4.chunk.js",
-  "main.js.map": "/static/js/main.f5ee94f4.chunk.js.map",
-  "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
-  "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
-  "static/js/2.f49ab946.chunk.js": "/static/js/2.f49ab946.chunk.js",
-  "static/js/2.f49ab946.chunk.js.map": "/static/js/2.f49ab946.chunk.js.map",
-  "index.html": "/index.html",
-  "precache-manifest.219d79bd321593289ea6c45776679ab5.js": "/precache-manifest.219d79bd321593289ea6c45776679ab5.js",
-  "service-worker.js": "/service-worker.js",
-  "static/css/main.be9cd952.chunk.css.map": "/static/css/main.be9cd952.chunk.css.map",
-  "static/media/planmate-logo-purple.png": "/static/media/planmate-logo-purple.61a31776.png",
-  "static/media/planmate-logo-white.png": "/static/media/planmate-logo-white.b0cf3a20.png"
+  "files": {
+    "main.css": "/static/css/main.31d6cfe0.css",
+    "main.js": "/static/js/main.5317445f.js",
+    "static/media/planmate-logo-white.png": "/static/media/planmate-logo-white.f12b191a150a8eb8263d.png",
+    "static/media/planmate-logo-purple.png": "/static/media/planmate-logo-purple.5f337deb3fc3c3b3e511.png",
+    "index.html": "/index.html",
+    "main.5317445f.js.map": "/static/js/main.5317445f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.31d6cfe0.css",
+    "static/js/main.5317445f.js"
+  ]
 }
