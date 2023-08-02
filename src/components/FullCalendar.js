@@ -116,6 +116,7 @@ export default function Calendar({ user }) {
             eventContent={renderEventContent}
             editable={true}
             selectable={true}
+            dayMaxEvents={true}
           />
         </Box>
       </Box>
