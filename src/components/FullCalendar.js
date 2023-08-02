@@ -14,6 +14,7 @@ import {
 import { db } from "../firebase";
 import EventPopup from "./EventPopup";
 import { nanoid } from "nanoid";
+import { Button } from "@mui/base";
 
 export default function Calendar({ user }) {
   // State variable to store events
@@ -42,6 +43,11 @@ export default function Calendar({ user }) {
     setPopupOpen(true);
   };
 
+  // Function to handle the "Add a new event" button click
+  const handleAddEventButtonClick = () => {
+    setPopupOpen(true);
+  };
+
   // Function to handle event create on the calendar
   const handleEventCreate = async (eventData) => {
     // Destructure the eventData object
@@ -51,7 +57,7 @@ export default function Calendar({ user }) {
       userId: user.uid,
       createdAt: serverTimestamp(),
       ...eventData,
-    }
+    };
 
     // Add the event to Firestore
     const docRef = await addDoc(collection(db, "events"), event);
@@ -92,8 +98,14 @@ export default function Calendar({ user }) {
           <FullCalendar
             plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"
+            customButtons={{
+              addEventButton: {
+                text: "Add event",
+                click: handleAddEventButtonClick,
+              },
+            }}
             headerToolbar={{
-              left: "prev,next today",
+              left: "prev,next today addEventButton",
               center: "title",
               right: "dayGridMonth,timeGridWeek,timeGridDay",
             }}
