@@ -14,7 +14,6 @@ import {
 import { db } from "../firebase";
 import EventPopup from "./EventPopup";
 import { nanoid } from "nanoid";
-import { Button } from "@mui/base";
 
 export default function Calendar({ user }) {
   // State variable to store events
@@ -51,11 +50,11 @@ export default function Calendar({ user }) {
   // Function to handle event create on the calendar
   const handleEventCreate = async (eventData) => {
     // Destructure the eventData object
-    const groupId = nanoid();
     const event = {
-      groupId,
+      id: nanoid(),
       userId: user.uid,
-      createdAt: serverTimestamp(),
+      startStr: eventData.start,
+      endStr: eventData.end,
       ...eventData,
     };
 
@@ -65,7 +64,6 @@ export default function Calendar({ user }) {
       ...prevEvents,
       {
         id: docRef.id,
-        groupId,
         ...event,
       },
     ]);

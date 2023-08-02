@@ -6,30 +6,44 @@ import {
   DialogActions,
   Button,
   TextField,
+  Switch,
+  Select,
+  MenuItem,
+  FormControl,
   FormControlLabel,
-  Checkbox,
+  InputLabel,
   Box,
 } from "@mui/material";
 
 const EventPopup = ({ isOpen, onClose, onSubmit }) => {
+  // Initialise event data with default values:
   const currentDate = new Date().toISOString().slice(0, 16); // Get the current date and time in the format "YYYY-MM-DDThh:mm"
   const [eventData, setEventData] = useState({
     title: "",
     start: currentDate, // Set the current date and time as the default start date and time,
     end: "",
-    notes: "",
-    isFullDay: false, // added isFullDay flag to the state to give the option to the user to select if the event is a full-day event or not
+    allDay: false, // Set the allDay default value as false
+    description: "",
+    category: "",
+    backgroundColor: "",
   });
 
+  // Reset fields when the popup is opened
   useEffect(() => {
     if (isOpen) {
       setEventData((prevData) => ({
-        ...prevData,
-        isFullDay: false, // Reset the isFullDay flag when the popup is opened
+        title: "",
+        start: currentDate,
+        end: "",
+        allDay: false,
+        description: "",
+        category: "",
+        backgroundColor: "",
       }));
     }
   }, [isOpen]);
 
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEventData((prevData) => ({
@@ -38,47 +52,39 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
     }));
   };
 
-  // added function to handle the checkbox change event
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
+  // Toggle all day switch
+  const handleAllDayToggle = () => {
     setEventData((prevData) => ({
       ...prevData,
-      [name]: checked,
+      allDay: !prevData.allDay,
     }));
   };
 
-  // added function to handle the end time click event
+  // Calculate end time based on start time and selected duration
   const handleEndTimeClick = (minutes) => {
     const start = new Date(eventData.start);
-    const end = new Date(start.getTime() + minutes * 60000) // Calculate end time by adding the minutes to the start time
+    const timeZoneOffset = start.getTimezoneOffset(); // Get the timezone offset in minutes
+    const end = new Date(start.getTime() + (minutes - timeZoneOffset) * 60000) // Calculate end time by adding the minutes to the start time
     setEventData((prevData) => ({
       ...prevData,
       end: end.toISOString().slice(0, 16), // Convert the end time to the format "YYYY-MM-DDThh:mm"
     }));
   };
 
+  // Handle form submission
   const handleSubmit = () => {
-    // Remove the isFullDay flag from the eventData object
-    const { isFullDay, ...eventDataWithoutIsFullDay } = eventData;
-    const event = {
-      ...eventDataWithoutIsFullDay,
-      isFullDay,
-    };
-    onSubmit(event);
-    setEventData({
-      title: "",
-      start: "",
-      end: "",
-      notes: "",
-      isFullDay: false,
-    });
+    onSubmit(eventData);
+    onClose();
   };
+
+  
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <Box sx={{ minWidth: 600 }}>
         <DialogTitle>Add Event</DialogTitle>
         <DialogContent>
+          {/* Event title */}
           <Box sx={{ marginBottom: 2, marginTop: 2 }}>
             <TextField
               name="title"
@@ -91,6 +97,7 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
               fullWidth
             />
           </Box>
+          {/* Event start */}
           <Box sx={{ marginBottom: 2 }}>
             <TextField
               name="start"
@@ -103,13 +110,21 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
               }}
               fullWidth
             />
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Button onClick={() => handleEndTimeClick(15)}>15 minutes</Button>
-              <Button onClick={() => handleEndTimeClick(30)}>30 minutes</Button>
-              <Button onClick={() => handleEndTimeClick(45)}>45 minutes</Button>
-              <Button onClick={() => handleEndTimeClick(60)}>1 hour</Button>
+            {/* All Day switch */}
+            <Box sx={{ display: "flex", alignItems: "center", marginTop: 2 }}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    name="allDay"
+                    checked={eventData.allDay}
+                    onChange={handleAllDayToggle}
+                  />
+                }
+                label="All Day"
+              />
             </Box>
           </Box>
+          {/* Event end */}
           <Box sx={{ marginBottom: 2 }}>
             <TextField
               name="end"
@@ -122,32 +137,69 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
               }}
               fullWidth
             />
+            {/* Duration buttons */}
+            {!eventData.allDay && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: 2,
+                }}
+              >
+                <Button onClick={() => handleEndTimeClick(15)}>15 minutes</Button>
+                <Button onClick={() => handleEndTimeClick(30)}>30 minutes</Button>
+                <Button onClick={() => handleEndTimeClick(45)}>45 minutes</Button>
+                <Button onClick={() => handleEndTimeClick(60)}>1 hour</Button>
+              </Box>
+            )}
           </Box>
-          <Box sx={{ marginBottom: 2 }}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="isFullDay"
-                  checked={eventData.isFullDay}
-                  onChange={handleCheckboxChange}
-                />
-              }
-              label="Full-day event"
-            />
-          </Box>
+          {/* Event description */}
           <Box sx={{ marginBottom: 2 }}>
             <TextField
-              name="notes"
-              label="Notes"
+              name="description"
+              label="Description"
               multiline
               rows={4}
-              value={eventData.notes}
+              value={eventData.description}
               onChange={handleChange}
               InputLabelProps={{
                 shrink: true,
               }}
               fullWidth
             />
+          </Box>
+          {/* Event category */}
+          <Box sx={{ marginBottom: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel>Category</InputLabel>
+              <Select
+                name="category"
+                value={eventData.category}
+                onChange={handleChange}
+              >
+                <MenuItem value="Work">Work</MenuItem>
+                <MenuItem value="Personal">Personal</MenuItem>
+                <MenuItem value="Private">Private</MenuItem>
+                <MenuItem value="Event">Event</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+          {/* Event background color */}
+          <Box sx={{ marginBottom: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel>Background Color</InputLabel>
+              <Select
+                name="backgroundColor"
+                value={eventData.backgroundColor}
+                onChange={handleChange}
+              >
+                <MenuItem value="">Default</MenuItem>
+                <MenuItem value="#f00">Red</MenuItem>
+                <MenuItem value="#0f0">Green</MenuItem>
+                <MenuItem value="#00f">Blue</MenuItem>
+                {/* Add more color options here */}
+              </Select>
+            </FormControl>
           </Box>
         </DialogContent>
         <DialogActions>
