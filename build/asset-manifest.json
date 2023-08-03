@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/static/css/main.31d6cfe0.css",
-    "main.js": "/static/js/main.5317445f.js",
+    "main.js": "/static/js/main.90706ad8.js",
     "static/media/planmate-logo-white.png": "/static/media/planmate-logo-white.f12b191a150a8eb8263d.png",
     "static/media/planmate-logo-purple.png": "/static/media/planmate-logo-purple.5f337deb3fc3c3b3e511.png",
     "index.html": "/index.html",
-    "main.5317445f.js.map": "/static/js/main.5317445f.js.map"
+    "main.90706ad8.js.map": "/static/js/main.90706ad8.js.map"
   },
   "entrypoints": [
     "static/css/main.31d6cfe0.css",
-    "static/js/main.5317445f.js"
+    "static/js/main.90706ad8.js"
   ]
 }
