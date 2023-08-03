@@ -14,34 +14,45 @@ import {
   InputLabel,
   Box,
 } from "@mui/material";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
-const EventPopup = ({ isOpen, onClose, onSubmit }) => {
-  // Initialise event data with default values:
-  const currentDate = new Date().toISOString().slice(0, 16); // Get the current date and time in the format "YYYY-MM-DDThh:mm"
+const EventPopup = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  onUpdate,
+  onDelete,
+  selectedEventId,
+}) => {
+  // added onDelete and eventData to props, eventData will help with editing events
+  // Get the current date and time in the format "YYYY-MM-DDThh:mm"
+  const currentDate = new Date().toISOString().slice(0, 16);
+  // Initialise event data with default values or use the initialEventData if it is passed as a prop:
   const [eventData, setEventData] = useState({
     title: "",
-    start: currentDate, // Set the current date and time as the default start date and time,
+    start: currentDate,
     end: "",
-    allDay: false, // Set the allDay default value as false
+    allDay: false,
     description: "",
     category: "",
     backgroundColor: "",
   });
 
-  // Reset fields when the popup is opened
   useEffect(() => {
-    if (isOpen) {
-      setEventData((prevData) => ({
-        title: "",
-        start: currentDate,
-        end: "",
-        allDay: false,
-        description: "",
-        category: "",
-        backgroundColor: "",
-      }));
-    }
-  }, [isOpen]);
+    const fetchEventDetails = async () => {
+      if (selectedEventId) {
+        const eventDoc = doc(db, "events", selectedEventId);
+        const eventSnapshot = await getDoc(eventDoc);
+        if (eventSnapshot.exists()) {
+          const eventDataFromFirestore = eventSnapshot.data();
+          setEventData(eventDataFromFirestore);
+        }
+      }
+    };
+  
+    fetchEventDetails();
+  }, [selectedEventId]);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -50,6 +61,12 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  // Handle delete button click
+  const handleDelete = () => {
+    onDelete(selectedEventId); // Pass the event id to the parent component for deletion
+    onClose();
   };
 
   // Toggle all day switch
@@ -64,7 +81,7 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
   const handleEndTimeClick = (minutes) => {
     const start = new Date(eventData.start);
     const timeZoneOffset = start.getTimezoneOffset(); // Get the timezone offset in minutes
-    const end = new Date(start.getTime() + (minutes - timeZoneOffset) * 60000) // Calculate end time by adding the minutes to the start time
+    const end = new Date(start.getTime() + (minutes - timeZoneOffset) * 60000); // Calculate end time by adding the minutes to the start time
     setEventData((prevData) => ({
       ...prevData,
       end: end.toISOString().slice(0, 16), // Convert the end time to the format "YYYY-MM-DDThh:mm"
@@ -73,11 +90,13 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
 
   // Handle form submission
   const handleSubmit = () => {
-    onSubmit(eventData);
+    if (eventData.id) {
+      onUpdate(eventData); // Call the onUpdate function for updating
+    } else {
+      onSubmit(eventData); // Call the onSubmit function for creating
+    }
     onClose();
   };
-
-  
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
@@ -146,9 +165,15 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
                   marginTop: 2,
                 }}
               >
-                <Button onClick={() => handleEndTimeClick(15)}>15 minutes</Button>
-                <Button onClick={() => handleEndTimeClick(30)}>30 minutes</Button>
-                <Button onClick={() => handleEndTimeClick(45)}>45 minutes</Button>
+                <Button onClick={() => handleEndTimeClick(15)}>
+                  15 minutes
+                </Button>
+                <Button onClick={() => handleEndTimeClick(30)}>
+                  30 minutes
+                </Button>
+                <Button onClick={() => handleEndTimeClick(45)}>
+                  45 minutes
+                </Button>
                 <Button onClick={() => handleEndTimeClick(60)}>1 hour</Button>
               </Box>
             )}
@@ -197,13 +222,13 @@ const EventPopup = ({ isOpen, onClose, onSubmit }) => {
                 <MenuItem value="#f00">Red</MenuItem>
                 <MenuItem value="#0f0">Green</MenuItem>
                 <MenuItem value="#00f">Blue</MenuItem>
-                {/* Add more color options here */}
               </Select>
             </FormControl>
           </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
+          {selectedEventId && <Button onClick={handleDelete}>Delete</Button>}
           <Button onClick={handleSubmit}>Create</Button>
         </DialogActions>
       </Box>

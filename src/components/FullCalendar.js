@@ -9,6 +9,8 @@ import {
   collection,
   getDocs,
   addDoc,
+  deleteDoc,
+  updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../firebase";
@@ -20,30 +22,76 @@ export default function Calendar({ user }) {
   const [events, setEvents] = useState([]);
   // State variable to control the popup
   const [isPopupOpen, setPopupOpen] = useState(false);
+  // State variable to store the selected event ID
+  const [selectedEventId, setSelectedEventId] = useState(null);
 
   useEffect(() => {
     // Fetch events from Firestore
     const fetchEvents = async () => {
       const eventsCollection = collection(db, "events");
       const eventsSnapshot = await getDocs(eventsCollection);
-      // Map the events data and update the state
-      const eventsData = eventsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setEvents(eventsData);
+      
+      // Filter events based on the user's ID
+      const userEvents = eventsSnapshot.docs
+        .map((doc) => ({ id: doc.id, ...doc.data() }))
+        .filter((event) => event.userId === user.uid);
+      
+      // Update the state with the filtered events
+      setEvents(userEvents);
     };
-
+  
     fetchEvents();
-  }, []);
+  }, [user]);
+
+  // Function to handle event click on the calendar
+  const handleEventClick = (clickInfo) => {
+    setSelectedEventId(clickInfo.event.id); // store the event id
+    setPopupOpen(true); // open the popup
+  };
+
+  // Function to handle event update on the calendar
+  const handleEventUpdate = async (updatedEvent) => {
+    // Find the index of the updated event in the events array
+  const updatedIndex = events.findIndex((event) => event.id === updatedEvent.id);
+
+  if (updatedIndex !== -1) {
+    // Update the event in the events array
+    const updatedEvents = [...events];
+    updatedEvents[updatedIndex] = updatedEvent;
+    setEvents(updatedEvents);
+
+    // Update the event in Firestore
+    const eventRef = doc(db, "events", updatedEvent.id);
+    await updateDoc(eventRef, updatedEvent);
+  }
+
+  setSelectedEventId(updatedEvent.id);
+};
+
+  // Function to handle event delete on the calendar
+  const handleEventDelete = async (eventId) => {
+    // Check if the user is allowed to delete the event
+    const eventToDelete = events.find((event) => event.id === eventId);
+    if (eventToDelete && eventToDelete.userId === user.uid) {
+      // Remove the event from the events array
+      const updatedEvents = events.filter((event) => event.id !== eventId);
+      setEvents(updatedEvents);
+
+      // then remove the event from Firestore
+      const eventRef = doc(db, "events", eventId);
+      await deleteDoc(eventRef);
+    }
+  };
 
   // Function to handle date click events on the calendar
   const handleDateClick = () => {
+    setSelectedEventId(null); // Reset selected event ID when adding new events 
     setPopupOpen(true);
   };
 
   // Function to handle the "Add a new event" button click
   const handleAddEventButtonClick = () => {
+    setSelectedEventId(null); // Reset selected event ID when adding new events
     setPopupOpen(true);
   };
 
@@ -69,15 +117,21 @@ export default function Calendar({ user }) {
     ]);
     // Close the popup
     setPopupOpen(false);
+    setSelectedEventId(null);
   };
 
   // Function to render event content
   const renderEventContent = (eventInfo) => {
     return (
-      <>
+      <div
+        onClick={() => {
+          setSelectedEventId(eventInfo.event.id);
+          setPopupOpen(true);
+        }}
+      >
         <b>{eventInfo.timeText}</b>
         <i>{eventInfo.event.title}</i>
-      </>
+      </div>
     );
   };
 
@@ -117,6 +171,7 @@ export default function Calendar({ user }) {
             editable={true}
             selectable={true}
             dayMaxEvents={true}
+            eventClick={handleEventClick}
           />
         </Box>
       </Box>
@@ -124,6 +179,9 @@ export default function Calendar({ user }) {
         isOpen={isPopupOpen}
         onClose={() => setPopupOpen(false)}
         onSubmit={handleEventCreate}
+        onUpdate={handleEventUpdate}
+        onDelete={handleEventDelete}
+        selectedEventId={selectedEventId}
       />
     </ThemeProvider>
   );
