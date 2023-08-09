@@ -34,8 +34,11 @@ const Calendar = ({ user }) => {
     const user = userRef ? userRef : null;
     // Check if the user is logged in
     if(!user) {
+      console.log("User not logged in");
       setLoading(false);
       return;
+    } else {
+      console.log("User logged in ", auth.currentUser.uid);
     }
 
     const unsubscribe = onSnapshot(collection(db, "events"), (snapshot) => {
@@ -59,22 +62,34 @@ const Calendar = ({ user }) => {
 
   // Function to handle event update on the calendar
   const handleEventUpdate = async (updatedEvent) => {
+    console.log("handleEventUpdate called");
     // Find the index of the updated event in the events array
     const updatedIndex = events.findIndex(
       (event) => event.id === updatedEvent.id
     );
 
+    console.log("Updated event index:", updatedIndex);
+  
     if (updatedIndex !== -1) {
+      console.log("Updating event in state");
       // Update the event in the events array
       const updatedEvents = [...events];
       updatedEvents[updatedIndex] = updatedEvent;
       setEvents(updatedEvents);
-
+  
+      console.log("Updated events array:", updatedEvents);
+  
       // Update the event in Firestore
       const eventRef = doc(db, "events", updatedEvent.id);
-      await updateDoc(eventRef, updatedEvent);
+      await updateDoc(eventRef, updatedEvent)
+        .then(() => {
+          console.log("Event updated in Firestore");
+        })
+        .catch((error) => {
+          console.error("Error updating event in Firestore:", error);
+        });
     }
-
+  
     setSelectedEventId(updatedEvent.id);
   };
 

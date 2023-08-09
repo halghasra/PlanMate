@@ -101,8 +101,10 @@ const EventPopup = ({
   // Handle form submission
   const handleSubmit = () => {
     if (selectedEventId) {
-      onUpdate(eventData); // Call the onUpdate function for updating
+      console.log("Updating event with data:", eventData);
+      onUpdate({ ...eventData, id: selectedEventId }); // Call the onUpdate function for updating
     } else {
+      console.log("Creating event with data:", eventData);
       onSubmit(eventData); // Call the onSubmit function for creating
     }
     onClose();
