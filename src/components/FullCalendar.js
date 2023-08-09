@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ThemeProvider, Box } from "@mui/material";
+import { ThemeProvider, Box, CircularProgress } from "@mui/material";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -7,51 +7,48 @@ import interactionPlugin from "@fullcalendar/interaction";
 import theme from "../theme/theme";
 import {
   collection,
-  getDocs,
   doc,
   addDoc,
   deleteDoc,
   updateDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { auth } from "../firebase";
 import EventPopup from "./EventPopup";
 
-export default function Calendar({ user }) {
+
+const Calendar = ({ user }) => {
   // State variable to store events
   const [events, setEvents] = useState([]);
   // State variable to control the popup
   const [isPopupOpen, setPopupOpen] = useState(false);
   // State variable to store the selected event ID
   const [selectedEventId, setSelectedEventId] = useState(null);
+  // State variable to store the loading state
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch events from Firestore
-    const fetchEvents = async () => {
-      const eventsCollection = collection(db, "events");
-      const eventsSnapshot = await getDocs(eventsCollection);
+    // Initialise the user variable
+    const userRef = auth.currentUser;
+    const user = userRef ? userRef : null;
+    // Check if the user is logged in
+    if(!user) {
+      setLoading(false);
+      return;
+    }
 
-      // Create an array to store events
-      const userEvents = [];
+    const unsubscribe = onSnapshot(collection(db, "events"), (snapshot) => {
+      const eventData = snapshot.docs
+        .map((doc) => ({ id: doc.id, ...doc.data() }))
+        .filter((event) => event.userId === user.uid);
+      setEvents(eventData);
+      setLoading(false);
+    });
 
-      // Loop through the documents in the events collection
-      eventsSnapshot.docs.forEach((doc) => {
-        // Get the data from the doc
-        const eventData = doc.data();
-
-        // Check if the event belongs to the logged in user
-        if (eventData.userId === user.uid) {
-          // Push the event data to the array
-          userEvents.push({
-            id: doc.id,
-            ...eventData,
-          });
-        }
-      });
-      // Update the state with the filtered events
-      setEvents(userEvents);
+    return () => {
+      unsubscribe();
     };
-
-    fetchEvents();
   }, [user]);
 
   // Function to handle event click on the calendar
@@ -150,6 +147,21 @@ export default function Calendar({ user }) {
     );
   };
 
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -201,3 +213,5 @@ export default function Calendar({ user }) {
     </ThemeProvider>
   );
 }
+
+export default Calendar;

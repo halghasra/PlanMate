@@ -239,7 +239,7 @@ const EventPopup = ({
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
           {selectedEventId && <Button onClick={handleDelete}>Delete</Button>}
-          <Button onClick={handleSubmit}>Create</Button>
+          <Button onClick={handleSubmit}>{selectedEventId ? "Save" : "Create"}</Button>
         </DialogActions>
       </Box>
     </Dialog>
