@@ -50,9 +50,11 @@ const EventPopup = ({
         }
       }
     };
-  
-    fetchEventDetails();
-  }, [selectedEventId]);
+
+    if (isOpen) {
+      fetchEventDetails();
+    }
+  }, [isOpen, selectedEventId]);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -90,7 +92,7 @@ const EventPopup = ({
 
   // Handle form submission
   const handleSubmit = () => {
-    if (eventData.id) {
+    if (selectedEventId) {
       onUpdate(eventData); // Call the onUpdate function for updating
     } else {
       onSubmit(eventData); // Call the onSubmit function for creating

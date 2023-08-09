@@ -8,14 +8,13 @@ import theme from "../theme/theme";
 import {
   collection,
   getDocs,
+  doc,
   addDoc,
   deleteDoc,
   updateDoc,
-  serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import EventPopup from "./EventPopup";
-import { nanoid } from "nanoid";
 
 export default function Calendar({ user }) {
   // State variable to store events
@@ -30,16 +29,28 @@ export default function Calendar({ user }) {
     const fetchEvents = async () => {
       const eventsCollection = collection(db, "events");
       const eventsSnapshot = await getDocs(eventsCollection);
-      
-      // Filter events based on the user's ID
-      const userEvents = eventsSnapshot.docs
-        .map((doc) => ({ id: doc.id, ...doc.data() }))
-        .filter((event) => event.userId === user.uid);
-      
+
+      // Create an array to store events
+      const userEvents = [];
+
+      // Loop through the documents in the events collection
+      eventsSnapshot.docs.forEach((doc) => {
+        // Get the data from the doc
+        const eventData = doc.data();
+
+        // Check if the event belongs to the logged in user
+        if (eventData.userId === user.uid) {
+          // Push the event data to the array
+          userEvents.push({
+            id: doc.id,
+            ...eventData,
+          });
+        }
+      });
       // Update the state with the filtered events
       setEvents(userEvents);
     };
-  
+
     fetchEvents();
   }, [user]);
 
@@ -52,21 +63,23 @@ export default function Calendar({ user }) {
   // Function to handle event update on the calendar
   const handleEventUpdate = async (updatedEvent) => {
     // Find the index of the updated event in the events array
-  const updatedIndex = events.findIndex((event) => event.id === updatedEvent.id);
+    const updatedIndex = events.findIndex(
+      (event) => event.id === updatedEvent.id
+    );
 
-  if (updatedIndex !== -1) {
-    // Update the event in the events array
-    const updatedEvents = [...events];
-    updatedEvents[updatedIndex] = updatedEvent;
-    setEvents(updatedEvents);
+    if (updatedIndex !== -1) {
+      // Update the event in the events array
+      const updatedEvents = [...events];
+      updatedEvents[updatedIndex] = updatedEvent;
+      setEvents(updatedEvents);
 
-    // Update the event in Firestore
-    const eventRef = doc(db, "events", updatedEvent.id);
-    await updateDoc(eventRef, updatedEvent);
-  }
+      // Update the event in Firestore
+      const eventRef = doc(db, "events", updatedEvent.id);
+      await updateDoc(eventRef, updatedEvent);
+    }
 
-  setSelectedEventId(updatedEvent.id);
-};
+    setSelectedEventId(updatedEvent.id);
+  };
 
   // Function to handle event delete on the calendar
   const handleEventDelete = async (eventId) => {
@@ -85,7 +98,7 @@ export default function Calendar({ user }) {
 
   // Function to handle date click events on the calendar
   const handleDateClick = () => {
-    setSelectedEventId(null); // Reset selected event ID when adding new events 
+    setSelectedEventId(null); // Reset selected event ID when adding new events
     setPopupOpen(true);
   };
 
@@ -97,24 +110,26 @@ export default function Calendar({ user }) {
 
   // Function to handle event create on the calendar
   const handleEventCreate = async (eventData) => {
-    // Destructure the eventData object
-    const event = {
-      id: nanoid(),
+    // Add the event to Firestore
+    const newEventRef = await addDoc(collection(db, "events"), {
       userId: user.uid,
       startStr: eventData.start,
       endStr: eventData.end,
       ...eventData,
-    };
+    });
 
-    // Add the event to Firestore
-    const docRef = await addDoc(collection(db, "events"), event);
+    // Update the state with the new event
     setEvents((prevEvents) => [
       ...prevEvents,
       {
-        id: docRef.id,
-        ...event,
+        id: newEventRef.id,
+        userId: user.uid,
+        startStr: eventData.start,
+        endStr: eventData.end,
+        ...eventData,
       },
     ]);
+
     // Close the popup
     setPopupOpen(false);
     setSelectedEventId(null);
