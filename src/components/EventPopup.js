@@ -48,12 +48,20 @@ const EventPopup = ({
           const eventDataFromFirestore = eventSnapshot.data();
           setEventData(eventDataFromFirestore);
         }
+      } else if (isOpen) {
+        setEventData({
+          title: "",
+          start: currentDate,
+          end: "",
+          allDay: false,
+          description: "",
+          category: "",
+          backgroundColor: "",
+        });
       }
     };
-
-    if (isOpen) {
-      fetchEventDetails();
-    }
+    
+    fetchEventDetails();
   }, [isOpen, selectedEventId]);
 
   // Handle input changes
