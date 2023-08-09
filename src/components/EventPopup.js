@@ -67,6 +67,19 @@ const EventPopup = ({
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Additional validation for start and end dates
+    if (name === "start" || name === "end") {
+      const fieldName = name === "start" ? "Start" : "End";
+      const selectedDate = new Date(value);
+      const startDate = new Date(eventData.start);
+
+      if (name === "end" && selectedDate < startDate) {
+        // Prevent setting end date before start date
+        return;
+      }
+    }
+
     setEventData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -209,6 +222,9 @@ const EventPopup = ({
                   shrink: true,
                 }}
                 fullWidth
+                inputProps={{
+                  min: eventData.start, // Prevent end time from being before start time
+                }}
               />
             ) : (
               <TextField
@@ -221,6 +237,9 @@ const EventPopup = ({
                   shrink: true,
                 }}
                 fullWidth
+                inputProps={{
+                  min: eventData.start, // Prevent end time from being before start time
+                }}
               />
             )}
             {/* Duration buttons */}
