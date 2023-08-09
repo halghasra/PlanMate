@@ -60,7 +60,7 @@ const EventPopup = ({
         });
       }
     };
-    
+
     fetchEventDetails();
   }, [isOpen, selectedEventId]);
 
@@ -79,12 +79,38 @@ const EventPopup = ({
     onClose();
   };
 
+  // Calculate start and end times for all day events
+  const calculateAllDayTimes = (date) => {
+    const start = new Date(date);
+    const end = new Date(date);
+    end.setDate(end.getDate() + 1); // set end date to the next day
+    return {
+      start: start.toISOString().slice(0, 10),
+      end: end.toISOString().slice(0, 10),
+    };
+  };
+
   // Toggle all day switch
   const handleAllDayToggle = () => {
-    setEventData((prevData) => ({
-      ...prevData,
-      allDay: !prevData.allDay,
-    }));
+    const allDay = !eventData.allDay;
+    if (allDay) {
+      // Calculate all day start and end times
+      const { start, end } = calculateAllDayTimes(eventData.start);
+      setEventData((prevData) => ({
+        ...prevData,
+        allDay,
+        start,
+        end,
+      }));
+    } else {
+      // Reset start and end times to original values
+      setEventData((prevData) => ({
+        ...prevData,
+        allDay,
+        start: prevData.start,
+        end: prevData.end,
+      }));
+    }
   };
 
   // Calculate end time based on start time and selected duration
@@ -128,46 +154,75 @@ const EventPopup = ({
               fullWidth
             />
           </Box>
+          {/* All Day switch */}
+          <Box sx={{ display: "flex", alignItems: "center", marginTop: 2 }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  name="allDay"
+                  checked={eventData.allDay}
+                  onChange={handleAllDayToggle}
+                />
+              }
+              label="All Day"
+            />
+          </Box>
           {/* Event start */}
           <Box sx={{ marginBottom: 2 }}>
-            <TextField
-              name="start"
-              label="Start"
-              type="datetime-local"
-              value={eventData.start}
-              onChange={handleChange}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              fullWidth
-            />
-            {/* All Day switch */}
-            <Box sx={{ display: "flex", alignItems: "center", marginTop: 2 }}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    name="allDay"
-                    checked={eventData.allDay}
-                    onChange={handleAllDayToggle}
-                  />
-                }
-                label="All Day"
+            {eventData.allDay ? (
+              <TextField
+                name="start"
+                label="Start Date"
+                type="date"
+                value={eventData.start}
+                onChange={handleChange}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                fullWidth
               />
-            </Box>
+            ) : (
+              <TextField
+                name="start"
+                label="Start"
+                type="datetime-local"
+                value={eventData.start}
+                onChange={handleChange}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                fullWidth
+              />
+            )}
           </Box>
+
           {/* Event end */}
           <Box sx={{ marginBottom: 2 }}>
-            <TextField
-              name="end"
-              label="End"
-              type="datetime-local"
-              value={eventData.end}
-              onChange={handleChange}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              fullWidth
-            />
+            {eventData.allDay ? (
+              <TextField
+                name="end"
+                label="End Date"
+                type="date"
+                value={eventData.end}
+                onChange={handleChange}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                fullWidth
+              />
+            ) : (
+              <TextField
+                name="end"
+                label="End"
+                type="datetime-local"
+                value={eventData.end}
+                onChange={handleChange}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                fullWidth
+              />
+            )}
             {/* Duration buttons */}
             {!eventData.allDay && (
               <Box
@@ -241,7 +296,9 @@ const EventPopup = ({
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
           {selectedEventId && <Button onClick={handleDelete}>Delete</Button>}
-          <Button onClick={handleSubmit}>{selectedEventId ? "Save" : "Create"}</Button>
+          <Button onClick={handleSubmit}>
+            {selectedEventId ? "Save" : "Create"}
+          </Button>
         </DialogActions>
       </Box>
     </Dialog>
