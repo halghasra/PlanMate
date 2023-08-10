@@ -26,24 +26,35 @@ const EventPopup = ({
   selectedEventId,
   eventData: initialEventData,
   selectedStartDate,
-  selectedEndDate
+  selectedEndDate,
 }) => {
   // added onDelete and eventData to props, eventData will help with editing events
   // Get the current date and time in the format "YYYY-MM-DDThh:mm"
-  const currentDate = new Date().toISOString().slice(0, 16);
+  //const currentDate = new Date().toISOString().slice(0, 16);
+  // const currentDate = new Date().toLocaleString("en-US", {
+  //   year: "numeric",
+  //   month: "2-digit",
+  //   day: "2-digit",
+  //   hour: "2-digit",
+  //   minute: "2-digit",
+  // });
+  //console.log("EventPopup - currentDate:", currentDate);
   // Determine if it's a new event
   const isNewEvent = !selectedEventId;
   // Initialise event data with default values or use the initialEventData if it is passed as a prop:
-  const [eventData, setEventData] = useState(initialEventData || {
-    title: "",
-    start: isNewEvent ? currentDate : "",
-    end: "",
-    allDay: false,
-    description: "",
-    category: "",
-    backgroundColor: "",
-  });
+  const [eventData, setEventData] = useState(
+    initialEventData || {
+      title: "",
+      start: "",
+      end: "",
+      allDay: false,
+      description: "",
+      category: "",
+      backgroundColor: "",
+    }
+  );
 
+  /* This code is refactored to the useEffect below
   useEffect(() => {
     console.log("EventPopup useEffect - eventData:", eventData);
     const fetchEventDetails = async () => {
@@ -75,13 +86,76 @@ const EventPopup = ({
     };
 
     fetchEventDetails();
-  }, [isOpen, selectedEventId, isNewEvent, initialEventData, selectedStartDate, selectedEndDate]);
+  }, [
+    isOpen,
+    selectedEventId,
+    isNewEvent,
+    initialEventData,
+    selectedStartDate,
+    selectedEndDate,
+  ]);
+  */
+
+  // useEffect is refactored into smalled blocks of code,
+  // this is the first useEffect block, it will activate if the user clicks on the "Add Event" button. it will reset 'eventData' and set the 'start' date to the current date
+  useEffect(() => {
+    if (isNewEvent) {
+      const currentDate = new Date().toLocaleString("sv-SE", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }).replace(/ /, "T");
+      
+      console.log("currentDate:", currentDate);
+
+      setEventData({
+        title: "",
+        start: currentDate,
+        end: "",
+        allDay: false,
+        description: "",
+        category: "",
+        backgroundColor: "",
+      });
+    }
+  }, [isNewEvent]);
+
+  // this is the second useEffect block, it will activate when the user selects dates from the calendar. It will preload the 'start' and 'end' time with the selection, and toggle the 'allDay' switch based on the view
+  useEffect(() => {
+    if (selectedStartDate && selectedEndDate) {
+      const allDay = !selectedStartDate.includes("T");
+      setEventData((prevData) => ({
+        ...prevData,
+        start: selectedStartDate,
+        end: selectedEndDate,
+        allDay: allDay,
+      }));
+    }
+  }, [selectedStartDate, selectedEndDate]);
+
+  // this is the third useEffect block, it will activate if the user selects an existing event for editing. it will load the event data for editing
+  useEffect(() => {
+    if (isOpen && selectedEventId) {
+      const fetchEventDetails = async () => {
+        const eventDoc = doc(db, "events", selectedEventId);
+        const eventSnapshot = await getDoc(eventDoc);
+        if (eventSnapshot.exists()) {
+          const eventDataFromFirestore = eventSnapshot.data();
+          setEventData(eventDataFromFirestore);
+        }
+      };
+      fetchEventDetails();
+    } else if (isOpen && !isNewEvent && initialEventData) {
+      setEventData(initialEventData);
+    }
+  }, [isOpen, selectedEventId, isNewEvent, initialEventData]);
 
   // Handle input changes
   const handleChange = (e) => {
-    console.log("EventPopup handleChange - eventData:", eventData);
     const { name, value } = e.target;
-
     // Additional validation for start and end dates
     if (name === "start" || name === "end") {
       const fieldName = name === "start" ? "Start" : "End";
@@ -133,10 +207,14 @@ const EventPopup = ({
         end,
       }));
     } else {
-      // Reset start and end times to original values
+      // Calculate start and end times for non-all day events
+      const start = new Date(eventData.start);
+      const end = new Date(eventData.end);
       setEventData((prevData) => ({
         ...prevData,
         allDay,
+        start: start.toISOString().slice(0, 16),
+        end: end.toISOString().slice(0, 16),
       }));
     }
   };
@@ -155,10 +233,8 @@ const EventPopup = ({
   // Handle form submission
   const handleSubmit = () => {
     if (selectedEventId) {
-      console.log("Updating event with data:", eventData);
       onUpdate({ ...eventData, id: selectedEventId }); // Call the onUpdate function for updating
     } else {
-      console.log("Creating event with data:", eventData);
       onSubmit(eventData); // Call the onSubmit function for creating
     }
     onClose(); // Close the popup
@@ -167,7 +243,7 @@ const EventPopup = ({
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <Box sx={{ minWidth: 600 }}>
-        <DialogTitle>Add Event</DialogTitle>
+      <DialogTitle>{selectedEventId ? "Edit Event" : "Add Event"}</DialogTitle>
         <DialogContent>
           {/* Event title */}
           <Box sx={{ marginBottom: 2, marginTop: 2 }}>

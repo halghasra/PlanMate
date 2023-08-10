@@ -110,14 +110,29 @@ const Calendar = ({ user }) => {
 
   // Function to handle date/time selection on the calendar
   const handleDateSelect = (selectionInfo) => {
-    const { start, end } = selectionInfo;
+    const { start, end, allDay } = selectionInfo;
 
     console.log("Selection Info:", selectionInfo);
 
-    const startStr = selectionInfo.start.toISOString().slice(0, 16);
-    const endStr = selectionInfo.end.toISOString().slice(0, 16);
+    const formatDate = (date, includeTime = true) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
 
-    const allDay = selectionInfo.allDay;
+      if (includeTime) {
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+      } else {
+        return `${year}-${month}-${day}`;
+      }
+    };
+
+    const startStr = formatDate(start, !allDay);
+    const endStr = formatDate(end, !allDay);
+
+    console.log("Start:", startStr);
+    console.log("End:", endStr);
 
     // set the flag when adding a new event
     setNewEvent(true);
@@ -133,7 +148,7 @@ const Calendar = ({ user }) => {
       backgroundColor: "",
     }));
 
-    console.log("event Info:", eventData);
+    console.log("event Info from selection:", eventData);
 
     setSelectedEventId(null); // Reset selected event ID when adding new events
     setPopupOpen(true); // Open the popup
@@ -254,6 +269,7 @@ const Calendar = ({ user }) => {
             ref={calendarRef}
             plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"
+            timeZone="local"
             customButtons={{
               addEventButton: {
                 text: "Add event",
