@@ -395,10 +395,12 @@ const EventPopup = ({
                 value={eventData.backgroundColor}
                 onChange={handleChange}
               >
-                <MenuItem value="">Default</MenuItem>
-                <MenuItem value="#f00">Red</MenuItem>
-                <MenuItem value="#0f0">Green</MenuItem>
-                <MenuItem value="#00f">Blue</MenuItem>
+                <MenuItem value="#8969FE">Purple</MenuItem>
+                <MenuItem value="#FE6994">Red</MenuItem>
+                <MenuItem value="#69FE89">Green</MenuItem>
+                <MenuItem value="#6994FE">Blue</MenuItem>
+                <MenuItem value="#DEFE69">Yellow</MenuItem>
+                <MenuItem value="#69FED3">Cyan</MenuItem>
               </Select>
             </FormControl>
           </Box>
