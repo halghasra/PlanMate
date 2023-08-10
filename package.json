@@ -18,6 +18,8 @@
     "@mui/material": "^5.14.2",
     "@mui/system": "^5.14.1",
     "@mui/x-date-pickers": "^6.10.2",
+    "bootstrap": "^5.3.1",
+    "bootstrap-icons": "^1.10.5",
     "chownr": "^2.0.0",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.7",

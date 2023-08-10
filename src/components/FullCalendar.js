@@ -5,6 +5,9 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
+//import bootstrap5Plugin from "@fullcalendar/bootstrap5";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import theme from "../theme/theme";
 import {
   collection,
@@ -268,13 +271,18 @@ const Calendar = ({ user }) => {
         <Box sx={{ width: "90%" }}>
           <FullCalendar
             ref={calendarRef}
-            plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin, listPlugin]}
+            plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin, listPlugin,]}
             initialView="dayGridMonth"
             timeZone="local"
             customButtons={{
               addEventButton: {
                 text: "Add event",
                 click: handleAddEventButtonClick,
+                bootstrap5Icon: "bi-plus",
+                bootstrap5ButtonClass: "btn-primary",
+                style: {
+                  marginRight: "10px",
+                }
               },
             }}
             headerToolbar={{
@@ -282,6 +290,7 @@ const Calendar = ({ user }) => {
               center: "title",
               right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
             }}
+            themeSystem="bootstrap5"
             slotDuration="00:15" // Specify the duration of each slot
             slotMinTime="00:00:00" // Specify the minimum time to display in slots
             slotMaxTime="24:00:00" // Specify the maximum time to display in slots
@@ -291,8 +300,16 @@ const Calendar = ({ user }) => {
             editable={true}
             selectable={true}
             dayMaxEvents={true}
+            navLinks={true}
+            nowIndicator={true}
             eventClick={handleEventClick}
             select={(selectionInfo) => handleDateSelect(selectionInfo)}
+            style={{
+              backgroundColor: theme.palette.background.default, 
+              color: theme.palette.text.primary, 
+              border: `1px solid ${theme.palette.primary.main}`, 
+              borderRadius: '4px', 
+            }}
           />
         </Box>
       </Box>
