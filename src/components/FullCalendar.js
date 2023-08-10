@@ -4,6 +4,7 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import listPlugin from "@fullcalendar/list";
 import theme from "../theme/theme";
 import {
   collection,
@@ -267,7 +268,7 @@ const Calendar = ({ user }) => {
         <Box sx={{ width: "90%" }}>
           <FullCalendar
             ref={calendarRef}
-            plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
+            plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin, listPlugin]}
             initialView="dayGridMonth"
             timeZone="local"
             customButtons={{
@@ -279,7 +280,7 @@ const Calendar = ({ user }) => {
             headerToolbar={{
               left: "prev,next today addEventButton",
               center: "title",
-              right: "dayGridMonth,timeGridWeek,timeGridDay",
+              right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
             }}
             slotDuration="00:15" // Specify the duration of each slot
             slotMinTime="00:00:00" // Specify the minimum time to display in slots
