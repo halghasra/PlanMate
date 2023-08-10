@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ThemeProvider, Box, CircularProgress } from "@mui/material";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -16,7 +16,7 @@ import {
 import { db } from "../firebase";
 import { auth } from "../firebase";
 import EventPopup from "./EventPopup";
-
+import { set } from "date-fns";
 
 const Calendar = ({ user }) => {
   // State variable to store events
@@ -27,13 +27,28 @@ const Calendar = ({ user }) => {
   const [selectedEventId, setSelectedEventId] = useState(null);
   // State variable to store the loading state
   const [isLoading, setLoading] = useState(true);
+  // Reference to the calendar component
+  const calendarRef = useRef(null);
+  // flag to identify if user is adding a new event
+  const [isNewEvent, setNewEvent] = useState(false);
+
+  // Initialise the eventData state variable
+  const [eventData, setEventData] = useState({
+    title: "",
+    start: "",
+    end: "",
+    allDay: false,
+    description: "",
+    category: "",
+    backgroundColor: "",
+  });
 
   useEffect(() => {
     // Initialise the user variable
     const userRef = auth.currentUser;
     const user = userRef ? userRef : null;
     // Check if the user is logged in
-    if(!user) {
+    if (!user) {
       console.log("User not logged in");
       setLoading(false);
       return;
@@ -69,16 +84,16 @@ const Calendar = ({ user }) => {
     );
 
     console.log("Updated event index:", updatedIndex);
-  
+
     if (updatedIndex !== -1) {
       console.log("Updating event in state");
       // Update the event in the events array
       const updatedEvents = [...events];
       updatedEvents[updatedIndex] = updatedEvent;
       setEvents(updatedEvents);
-  
+
       console.log("Updated events array:", updatedEvents);
-  
+
       // Update the event in Firestore
       const eventRef = doc(db, "events", updatedEvent.id);
       await updateDoc(eventRef, updatedEvent)
@@ -89,8 +104,39 @@ const Calendar = ({ user }) => {
           console.error("Error updating event in Firestore:", error);
         });
     }
-  
+
     setSelectedEventId(updatedEvent.id);
+  };
+
+  // Function to handle date/time selection on the calendar
+  const handleDateSelect = (selectionInfo) => {
+    const { start, end } = selectionInfo;
+
+    console.log("Selection Info:", selectionInfo);
+
+    const startStr = selectionInfo.start.toISOString().slice(0, 16);
+    const endStr = selectionInfo.end.toISOString().slice(0, 16);
+
+    const allDay = selectionInfo.allDay;
+
+    // set the flag when adding a new event
+    setNewEvent(true);
+
+    // Update the eventData state with the selected dates
+    setEventData((prevData) => ({
+      title: "",
+      start: startStr,
+      end: endStr,
+      allDay: allDay,
+      description: "",
+      category: "",
+      backgroundColor: "",
+    }));
+
+    console.log("event Info:", eventData);
+
+    setSelectedEventId(null); // Reset selected event ID when adding new events
+    setPopupOpen(true); // Open the popup
   };
 
   // Function to handle event delete on the calendar
@@ -108,16 +154,31 @@ const Calendar = ({ user }) => {
     }
   };
 
-  // Function to handle date click events on the calendar
-  const handleDateClick = () => {
-    setSelectedEventId(null); // Reset selected event ID when adding new events
-    setPopupOpen(true);
-  };
-
   // Function to handle the "Add a new event" button click
   const handleAddEventButtonClick = () => {
+    setNewEvent(true);
+    const currentDate = new Date().toISOString().slice(0, 16);
     setSelectedEventId(null); // Reset selected event ID when adding new events
     setPopupOpen(true);
+
+    const calendarApi = calendarRef.current.getApi(); // Get the FullCalendar API
+    const allDay = calendarApi.getOption("allDaySlot"); // Use getOption on the API
+
+    console.log("All day slot:", allDay);
+
+    // Set initial eventData for adding a new event
+    setEventData({
+      title: "",
+      start: currentDate, // Set the start date to the current date
+      end: "",
+      allDay: allDay,
+      description: "",
+      category: "",
+      backgroundColor: "",
+    });
+
+    setSelectedEventId(null); // Reset selected event ID when adding new events
+    setPopupOpen(true); // Open the popup
   };
 
   // Function to handle event create on the calendar
@@ -190,6 +251,7 @@ const Calendar = ({ user }) => {
       >
         <Box sx={{ width: "90%" }}>
           <FullCalendar
+            ref={calendarRef}
             plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"
             customButtons={{
@@ -206,14 +268,14 @@ const Calendar = ({ user }) => {
             slotDuration="00:15" // Specify the duration of each slot
             slotMinTime="00:00:00" // Specify the minimum time to display in slots
             slotMaxTime="24:00:00" // Specify the maximum time to display in slots
-            allDaySlot={false} // Disable all-day slot
-            dateClick={handleDateClick}
+            allDaySlot={true} // Disable all-day slot
             events={events}
             eventContent={renderEventContent}
             editable={true}
             selectable={true}
             dayMaxEvents={true}
             eventClick={handleEventClick}
+            select={(selectionInfo) => handleDateSelect(selectionInfo)}
           />
         </Box>
       </Box>
@@ -224,9 +286,12 @@ const Calendar = ({ user }) => {
         onUpdate={handleEventUpdate}
         onDelete={handleEventDelete}
         selectedEventId={selectedEventId}
+        eventData={eventData}
+        selectedStartDate={eventData.start}
+        selectedEndDate={eventData.end}
       />
     </ThemeProvider>
   );
-}
+};
 
 export default Calendar;

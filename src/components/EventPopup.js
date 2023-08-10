@@ -24,14 +24,19 @@ const EventPopup = ({
   onUpdate,
   onDelete,
   selectedEventId,
+  eventData: initialEventData,
+  selectedStartDate,
+  selectedEndDate
 }) => {
   // added onDelete and eventData to props, eventData will help with editing events
   // Get the current date and time in the format "YYYY-MM-DDThh:mm"
   const currentDate = new Date().toISOString().slice(0, 16);
+  // Determine if it's a new event
+  const isNewEvent = !selectedEventId;
   // Initialise event data with default values or use the initialEventData if it is passed as a prop:
-  const [eventData, setEventData] = useState({
+  const [eventData, setEventData] = useState(initialEventData || {
     title: "",
-    start: currentDate,
+    start: isNewEvent ? currentDate : "",
     end: "",
     allDay: false,
     description: "",
@@ -40,7 +45,22 @@ const EventPopup = ({
   });
 
   useEffect(() => {
+    console.log("EventPopup useEffect - eventData:", eventData);
     const fetchEventDetails = async () => {
+      //clear the state when the popup is closed
+      if (!isOpen) {
+        setEventData({
+          title: "",
+          start: selectedStartDate || currentDate,
+          end: selectedEndDate || "",
+          allDay: false,
+          description: "",
+          category: "",
+          backgroundColor: "",
+        });
+        return;
+      }
+      // Fetch event details from Firestore when the popup is opened for editing
       if (selectedEventId) {
         const eventDoc = doc(db, "events", selectedEventId);
         const eventSnapshot = await getDoc(eventDoc);
@@ -48,24 +68,18 @@ const EventPopup = ({
           const eventDataFromFirestore = eventSnapshot.data();
           setEventData(eventDataFromFirestore);
         }
-      } else if (isOpen) {
-        setEventData({
-          title: "",
-          start: currentDate,
-          end: "",
-          allDay: false,
-          description: "",
-          category: "",
-          backgroundColor: "",
-        });
+      } else if (!isNewEvent && initialEventData) {
+        // Set initialEventData as the eventData when editing an event
+        setEventData(initialEventData);
       }
     };
 
     fetchEventDetails();
-  }, [isOpen, selectedEventId]);
+  }, [isOpen, selectedEventId, isNewEvent, initialEventData, selectedStartDate, selectedEndDate]);
 
   // Handle input changes
   const handleChange = (e) => {
+    console.log("EventPopup handleChange - eventData:", eventData);
     const { name, value } = e.target;
 
     // Additional validation for start and end dates
@@ -80,9 +94,11 @@ const EventPopup = ({
       }
     }
 
+    const newValue = name === "allDay" ? value === "true" : value;
+
     setEventData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: newValue,
     }));
   };
 
@@ -96,10 +112,11 @@ const EventPopup = ({
   const calculateAllDayTimes = (date) => {
     const start = new Date(date);
     const end = new Date(date);
-    end.setDate(end.getDate() + 1); // set end date to the next day
+    end.setDate(end.getDate() + 1); // Set end time to the next day
+    end.setMilliseconds(end.getMilliseconds() - 1); // Set end time to the last millisecond of the day
     return {
-      start: start.toISOString().slice(0, 10),
-      end: end.toISOString().slice(0, 10),
+      start: start.toISOString().slice(0, 16),
+      end: end.toISOString().slice(0, 16),
     };
   };
 
@@ -120,8 +137,6 @@ const EventPopup = ({
       setEventData((prevData) => ({
         ...prevData,
         allDay,
-        start: prevData.start,
-        end: prevData.end,
       }));
     }
   };
@@ -146,7 +161,7 @@ const EventPopup = ({
       console.log("Creating event with data:", eventData);
       onSubmit(eventData); // Call the onSubmit function for creating
     }
-    onClose();
+    onClose(); // Close the popup
   };
 
   return (
@@ -216,14 +231,14 @@ const EventPopup = ({
                 name="end"
                 label="End Date"
                 type="date"
-                value={eventData.end}
+                value={eventData.end.slice(0, 10)}
                 onChange={handleChange}
                 InputLabelProps={{
                   shrink: true,
                 }}
                 fullWidth
                 inputProps={{
-                  min: eventData.start, // Prevent end time from being before start time
+                  min: eventData.end.slice(0, 10), // Prevent end time from being before start time
                 }}
               />
             ) : (
