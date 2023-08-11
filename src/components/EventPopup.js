@@ -1,3 +1,17 @@
+/**
+ * A popup component for creating, editing, and deleting events.
+ * @param {Object} props - The component props.
+ * @param {boolean} props.isOpen - Whether the popup is open or not.
+ * @param {function} props.onClose - Function to close the popup.
+ * @param {function} props.onSubmit - Function to submit the form data for creating a new event.
+ * @param {function} props.onUpdate - Function to submit the form data for updating an existing event.
+ * @param {function} props.onDelete - Function to delete an existing event.
+ * @param {string} props.selectedEventId - The ID of the selected event for editing or deleting.
+ * @param {Object} props.eventData - The data of the selected event for editing.
+ * @param {string} props.selectedStartDate - The start date of the selected event.
+ * @param {string} props.selectedEndDate - The end date of the selected event.
+ * @returns {JSX.Element} - The EventPopup component.
+ */
 import React, { useEffect, useState } from "react";
 import {
   Dialog,
@@ -28,17 +42,6 @@ const EventPopup = ({
   selectedStartDate,
   selectedEndDate,
 }) => {
-  // added onDelete and eventData to props, eventData will help with editing events
-  // Get the current date and time in the format "YYYY-MM-DDThh:mm"
-  //const currentDate = new Date().toISOString().slice(0, 16);
-  // const currentDate = new Date().toLocaleString("en-US", {
-  //   year: "numeric",
-  //   month: "2-digit",
-  //   day: "2-digit",
-  //   hour: "2-digit",
-  //   minute: "2-digit",
-  // });
-  //console.log("EventPopup - currentDate:", currentDate);
   // Determine if it's a new event
   const isNewEvent = !selectedEventId;
   // Initialise event data with default values or use the initialEventData if it is passed as a prop:
@@ -53,48 +56,6 @@ const EventPopup = ({
       backgroundColor: "",
     }
   );
-
-  /* This code is refactored to the useEffect below
-  useEffect(() => {
-    console.log("EventPopup useEffect - eventData:", eventData);
-    const fetchEventDetails = async () => {
-      //clear the state when the popup is closed
-      if (!isOpen) {
-        setEventData({
-          title: "",
-          start: selectedStartDate || currentDate,
-          end: selectedEndDate || "",
-          allDay: false,
-          description: "",
-          category: "",
-          backgroundColor: "",
-        });
-        return;
-      }
-      // Fetch event details from Firestore when the popup is opened for editing
-      if (selectedEventId) {
-        const eventDoc = doc(db, "events", selectedEventId);
-        const eventSnapshot = await getDoc(eventDoc);
-        if (eventSnapshot.exists()) {
-          const eventDataFromFirestore = eventSnapshot.data();
-          setEventData(eventDataFromFirestore);
-        }
-      } else if (!isNewEvent && initialEventData) {
-        // Set initialEventData as the eventData when editing an event
-        setEventData(initialEventData);
-      }
-    };
-
-    fetchEventDetails();
-  }, [
-    isOpen,
-    selectedEventId,
-    isNewEvent,
-    initialEventData,
-    selectedStartDate,
-    selectedEndDate,
-  ]);
-  */
 
   // useEffect is refactored into smalled blocks of code,
   // this is the first useEffect block, it will activate if the user clicks on the "Add Event" button. it will reset 'eventData' and set the 'start' date to the current date
@@ -138,16 +99,19 @@ const EventPopup = ({
 
   // this is the third useEffect block, it will activate if the user selects an existing event for editing. it will load the event data for editing
   useEffect(() => {
+    // If the popup is open and there is a selected event id, it means the user has clicked on an existing event, so fetch the event data from Firestore
     if (isOpen && selectedEventId) {
       const fetchEventDetails = async () => {
         const eventDoc = doc(db, "events", selectedEventId);
         const eventSnapshot = await getDoc(eventDoc);
+        // If the event exists, set the event data
         if (eventSnapshot.exists()) {
           const eventDataFromFirestore = eventSnapshot.data();
           setEventData(eventDataFromFirestore);
         }
       };
       fetchEventDetails();
+      // If the popup is open and there is no selected event id, it means the user has closed the popup, so reset the event data
     } else if (isOpen && !isNewEvent && initialEventData) {
       setEventData(initialEventData);
     }
@@ -158,6 +122,7 @@ const EventPopup = ({
     const { name, value } = e.target;
     // Additional validation for start and end dates
     if (name === "start" || name === "end") {
+      // Prevent setting start date after end date
       const fieldName = name === "start" ? "Start" : "End";
       const selectedDate = new Date(value);
       const startDate = new Date(eventData.start);

@@ -1,7 +1,20 @@
+/**
+ * FILEPATH: /Users/husainghasra/VS Projects/PlanMate/src/theme/theme.js
+ * This module exports a MUI theme object with custom color palette, typography and button styles.
+ * @module theme
+ */
+
 import { createTheme } from "@mui/material";
 import { lighten } from "@mui/system";
 import Colours from "./Colours";
 
+/**
+ * The MUI theme object with custom color palette, typography and button styles.
+ * @type {Object}
+ * @property {Object} palette - The color palette object with primary, secondary, info and error colors.
+ * @property {Object} typography - The typography object with fontFamily property.
+ * @property {Object} components - The components object with MuiButton styleOverrides property.
+ */
 const theme = createTheme({
     palette: {
         primary: {

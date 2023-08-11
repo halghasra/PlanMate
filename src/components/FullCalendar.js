@@ -1,3 +1,9 @@
+/**
+ * A React component that renders a FullCalendar with events fetched from Firestore.
+ * @param {Object} props - The component props.
+ * @param {Object} props.user - The user object.
+ * @returns {JSX.Element} - The rendered component.
+ */
 import React, { useState, useEffect, useRef } from "react";
 import { ThemeProvider, Box, CircularProgress } from "@mui/material";
 import FullCalendar from "@fullcalendar/react";
@@ -5,7 +11,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
-//import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import theme from "../theme/theme";
@@ -118,6 +123,7 @@ const Calendar = ({ user }) => {
 
     console.log("Selection Info:", selectionInfo);
 
+    // Function to format the date to YYYY-MM-DDTHH:mm format
     const formatDate = (date, includeTime = true) => {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -125,6 +131,7 @@ const Calendar = ({ user }) => {
       const hours = String(date.getHours()).padStart(2, "0");
       const minutes = String(date.getMinutes()).padStart(2, "0");
 
+      // If allDay is true, then the time part is omitted
       if (includeTime) {
         return `${year}-${month}-${day}T${hours}:${minutes}`;
       } else {
