@@ -1,27 +1,79 @@
+/* Global Styles and Custom CSS Variables */
+
+/* Button Styles */
 :root {
+  /* Button Text Color */
   --fc-button-text-color: #fff;
+  
+  /* Button Background Color */
   --fc-button-bg-color: #8969fe;
+  
+  /* Button Border Color */
   --fc-button-border-color: #2c3e50;
+  
+  /* Button Hover Background Color */
   --fc-button-hover-bg-color: #9f88f2;
+  
+  /* Button Hover Border Color */
   --fc-button-hover-border-color: #1a252f;
+  
+  /* Button Active Background Color */
   --fc-button-active-bg-color: #4126a0;
+  
+  /* Button Active Border Color */
   --fc-button-active-border-color: #151e27;
+}
 
-  --fc-small-font-size: .85em;
+/* Typography and Colors */
+:root {
+  /* Small Font Size */
+  --fc-small-font-size: 0.85em;
+  
+  /* Page Background Color */
   --fc-page-bg-color: #a18af485;
+  
+  /* Neutral Background Color */
   --fc-neutral-bg-color: rgba(208, 208, 208, 0.3);
+  
+  /* Neutral Text Color */
   --fc-neutral-text-color: #808080;
+  
+  /* Border Color */
   --fc-border-color: #ddd;
+}
 
+/* Event Styles */
+:root {
+  /* Event Background Color */
   --fc-event-bg-color: #3788d8;
+  
+  /* Event Border Color */
   --fc-event-border-color: #3788d8;
+  
+  /* Event Text Color */
   --fc-event-text-color: #000000;
+  
+  /* Event Selected Overlay Color */
   --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
+}
 
+/* More Link Styles */
+:root {
+  /* More Link Background Color */
   --fc-more-link-bg-color: #a18af485;
+  
+  /* More Link Text Color */
   --fc-more-link-text-color: inherit;
+}
 
+/* Miscellaneous Styles */
+:root {
+  /* Background Event Opacity */
   --fc-bg-event-opacity: 0.3;
+  
+  /* Now Indicator Color */
   --fc-now-indicator-color: #8969fe;
+  
+  /* Daygrid Event Dot Width */
   --fc-daygrid-event-dot-width: 8px;
 }

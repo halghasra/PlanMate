@@ -8,6 +8,14 @@ Our project aims to solve this problem by creating a comprehensive and user-frie
 
 In addition, users will be able to categorize their tasks, set reminders and notifications, and view their calendar in various ways, such as by day, week, month, or year. The app will handle overlapping time slots and conflicting appointments in an intuitive and user-friendly manner, ensuring a seamless and stress-free scheduling experience.
 
+## Features
+
+- Combine tasks, appointments, and events in a single, organized calendar.
+- Categorize events to easily distinguish between different types of activities.
+- Set reminders and notifications to ensure you never miss an important event.
+- View your calendar by day, week, month, or year to match your preferred planning style.
+- Handle overlapping time slots and conflicting appointments seamlessly.
+
 ## Target User Groups:
 The target user group for this personal scheduling app will be individuals and small businesses who require a simple and efficient way to manage their schedules. This includes busy professionals, students, and entrepreneurs who need to keep track of appointments, tasks, and events.
 
@@ -28,3 +36,16 @@ Firebase Hosting (for hosting the front-end of the web application)
 
 ## High-level Architecture Diagram:
 ![image](https://user-images.githubusercontent.com/26522841/236644072-138b8814-c6b5-43dc-886f-1e45ee70de44.png)
+
+## Getting Started
+
+To run the application locally, follow these steps:
+
+1. Clone this repository using `git clone https://github.com/halghasra/PlanMate.git`.
+2. Navigate to the project directory using  `cd PlanMate`.
+3. Install project dependencies using `npm install`.
+4. Configure Firebase by adding your Firebase project credentials in `src/firebase.js`.
+5. Start the development server using `npm start`.
+6. Your application should now be running at `http://localhost:3000`.
+
+Feel free to visit my [live demo](https://planmate-3edb8.web.app) and start managing your schedule efficiently with PlanMate!

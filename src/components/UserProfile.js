@@ -132,7 +132,16 @@ const UserProfile = () => {
   
   // if the loading state is true, the component will render a loading spinner
   if (loading) {
-    return <CircularProgress />;
+    <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>;
   }
   
   // Otherwise, the component will render the user profile form

@@ -1,3 +1,9 @@
+/**
+ * The main component of the PlanMate application.
+ * Renders the appropriate component based on the current route.
+ * Subscribes to the authentication state changes and determines if the user needs to complete their profile.
+ * @extends Component
+ */
 import React, { Component } from "react";
 import {
   BrowserRouter as Router,
@@ -12,7 +18,7 @@ import Auth from "./components/Auth";
 import UserProfile from "./components/UserProfile"; //Import the user profile from Firebase
 import ProfileCompletion from "./components/ProfileCompletion";
 import Home from "./components/Home";
-import { ThemeProvider, CircularProgress } from "@mui/material";
+import { ThemeProvider, CircularProgress, Box } from "@mui/material";
 import theme from "./theme/theme";
 import Calendar from "./components/FullCalendar";
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -29,35 +35,25 @@ class App extends Component {
     needsProfileCompletion: false 
   };
 
-  /* Rewriting componentDidMount to add a user profile check.
-     This will check to see if the user is signed in and doesn't have a complete profile yet.
-  componentDidMount() {
-    this.authSubscription = onAuthStateChanged(auth, (user) => {
-      this.setState({ user , loading: false}); // stop loading
-    });
-  }
-  */
+  // Subscribes to the authentication state changes
+  authSubscription = null;
 
-  /**
-  Here, we're checking if a user document exists in the Firestore database whenever the
-  auth state changes. If the user fdocument does not exist, we're setting 'needsProfileCompletion'
-  to true, and we're using that flag to redirect the user to the ProfileCompletion page.
-  */
-  async componentDidMount() {
+  
+  componentDidMount() {
     this.authSubscription = onAuthStateChanged(auth, async (user) => {
       if (user) {
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          //user doc exists so they don't need to complete profile
+          //user document exists, no need to complete profile
           this.setState({
             user,
             loading: false,
             needsProfileCompletion: false,
           });
         } else {
-          // no user doc, they need to complete profile
+          // no user document, needs to complete profile
           this.setState({ user, loading: false, needsProfileCompletion: true });
         }
       } else {
@@ -72,13 +68,23 @@ class App extends Component {
   }
 
   componentWillUnmount() {
+    // unsubscribe from the auth state changes
     this.authSubscription();
   }
 
   render() {
     const { loading, user, needsProfileCompletion } = this.state;
     if (loading) {
-      return <CircularProgress />;
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>;
     }
     return (
       <Router>

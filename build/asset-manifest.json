@@ -1,14 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.31d6cfe0.css",
-    "main.js": "/static/js/main.90706ad8.js",
+    "main.css": "/static/css/main.6922252f.css",
+    "main.js": "/static/js/main.f1f8e20f.js",
+    "static/media/bootstrap-icons.woff?": "/static/media/bootstrap-icons.4753c5ba57962b4d7bf8.woff",
+    "static/media/bootstrap-icons.woff2?": "/static/media/bootstrap-icons.6d63d0501e5ed7b79dab.woff2",
     "static/media/planmate-logo-white.png": "/static/media/planmate-logo-white.f12b191a150a8eb8263d.png",
     "static/media/planmate-logo-purple.png": "/static/media/planmate-logo-purple.5f337deb3fc3c3b3e511.png",
     "index.html": "/index.html",
-    "main.90706ad8.js.map": "/static/js/main.90706ad8.js.map"
+    "main.6922252f.css.map": "/static/css/main.6922252f.css.map",
+    "main.f1f8e20f.js.map": "/static/js/main.f1f8e20f.js.map"
   },
   "entrypoints": [
-    "static/css/main.31d6cfe0.css",
-    "static/js/main.90706ad8.js"
+    "static/css/main.6922252f.css",
+    "static/js/main.f1f8e20f.js"
   ]
 }
