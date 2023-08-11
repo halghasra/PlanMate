@@ -24,15 +24,17 @@ By using this personal scheduling app, individuals and small businesses will be 
 
 ## Technology Stack:
 ### Front-end:
-ReactJS (for building the user interface) and Redux (for state management)
+- ReactJS: Used for building the user interface of the application.
+- Material-UI: Used for the design and styling of the overall components.
+- Bootstrap 5: Used for the design of the Calendar component (it doesn't support MUI).
+
 ### Back-end:
-Firebase Cloud Functions (for creating the API and handling server-side logic)
-### Database:
-Firebase Firestore (a flexible NoSQL database for storing calendar and user data)
-### Authentication:
-Firebase Authentication (for secure user authentication and authorization)
+- Firebase Authentication: Used for secure user authentication and authorisation.
+- Firebase Firestore: NoSQL database used for storing calendar events and user data.
+
 ### Hosting:
-Firebase Hosting (for hosting the front-end of the web application)
+- Firebase Hosting: Used to host the front-end of the web application, providing a reliable and scalable hosting solution.
+
 
 ## High-level Architecture Diagram:
 ![image](https://user-images.githubusercontent.com/26522841/236644072-138b8814-c6b5-43dc-886f-1e45ee70de44.png)
