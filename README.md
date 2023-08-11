@@ -6,13 +6,12 @@ The modern world is fast-paced and demanding, and it's becoming increasingly dif
 
 Our project aims to solve this problem by creating a comprehensive and user-friendly personal scheduling app. This app will allow users to combine all of their tasks and appointments into one calendar, giving them a clear and organized view of their schedule. With the ability to create, view, delete, and move events, users can easily keep track of their busy lives.
 
-In addition, users will be able to categorize their tasks, set reminders and notifications, and view their calendar in various ways, such as by day, week, month, or year. The app will handle overlapping time slots and conflicting appointments in an intuitive and user-friendly manner, ensuring a seamless and stress-free scheduling experience.
+In addition, users will be able to categorize their tasks and view their calendar in various ways, such as by day, week, month, or year. The app will handle overlapping time slots and conflicting appointments in an intuitive and user-friendly manner, ensuring a seamless and stress-free scheduling experience.
 
 ## Features
 
-- Combine tasks, appointments, and events in a single, organized calendar.
+- Combine tasks, appointments, and events in a single, organised calendar.
 - Categorize events to easily distinguish between different types of activities.
-- Set reminders and notifications to ensure you never miss an important event.
 - View your calendar by day, week, month, or year to match your preferred planning style.
 - Handle overlapping time slots and conflicting appointments seamlessly.
 
