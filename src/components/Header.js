@@ -25,7 +25,7 @@ import { LogoSecondary } from "../theme/Logos";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 
 // Create a styled component for the search bar
 const Search = styled("div")(({ theme }) => ({
@@ -139,7 +139,9 @@ const Header = () => {
           </IconButton>
         )}
         <Box component="span" sx={{ flexGrow: 1 }}>
-          <img src={LogoSecondary} alt="PlanMate logo" height="50" />
+          <Link to="/">
+            <img src={LogoSecondary} alt="PlanMate logo" height="50" />
+          </Link>
         </Box>
         <Search>
           <SearchIconWrapper>

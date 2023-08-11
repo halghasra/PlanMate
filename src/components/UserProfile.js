@@ -9,8 +9,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { auth, db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { TextField, Button, Box, Avatar, CircularProgress } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // to use Firestorage to store Profile pictures
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 const UserProfile = () => {
@@ -174,7 +175,10 @@ const UserProfile = () => {
           multiline
           sx={{ mb: 1 }}
         />
-        <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2, color:'white', '&:hover': {bgcolor: 'primary.light'} }}>
+        <Button component={Link} to="/" variant="contained" color="secondary" sx={{ mt: 1, mr: 1, '&:hover': {bgcolor: 'secondary.light'}}}>
+          <ArrowBackIcon /> Back
+        </Button>
+        <Button type="submit" variant="contained" color="primary" sx={{ mt: 1, ml: 1, color:'white', '&:hover': {bgcolor: 'primary.light'} }}>
         {submitting ? <CircularProgress size={24} /> : "Update profile"}
         </Button>
       </form>
