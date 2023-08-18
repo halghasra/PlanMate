@@ -36,7 +36,7 @@ By using this personal scheduling app, individuals and small businesses will be 
 
 
 ## High-level Architecture Diagram:
-![Architecture Diagram](https://github.com/halghasra/PlanMate/assets/26522841/d9bb7845-82c7-4cda-9349-86d826d47903)
+![Architecture Diagram 2](https://github.com/halghasra/PlanMate/assets/26522841/8a3803b1-cdf5-47b5-85fa-58a442a9e381)
 
 
 
